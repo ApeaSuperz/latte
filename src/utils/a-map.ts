@@ -1,7 +1,15 @@
 import '@amap/amap-jsapi-types'
-import {InjectionKey, onMounted, Ref, shallowRef, ShallowRef, unref, watch} from "vue";
+import {InjectionKey, Ref, shallowRef, ShallowRef, watch} from "vue";
 import AMapLoader from "@amap/amap-jsapi-loader";
-import {Arrayable, Fn, GeneralEventListener, MaybeRef, MaybeRefOrGetter, tryOnScopeDispose} from "@vueuse/core";
+import {
+  Arrayable,
+  Fn,
+  GeneralEventListener,
+  MaybeRefOrGetter,
+  toValue,
+  tryOnMounted,
+  tryOnScopeDispose
+} from "@vueuse/core";
 
 export interface CollectionPoint {
   name: string
@@ -85,8 +93,8 @@ export interface AMapKeyHostPair {
 export type AMapKeyPair = AMapKeySecretPair | AMapKeyHostPair
 
 export interface UseAMapOptions extends AMap.MapOptions {
-  mapId: string
-  keyPair: AMapKeyPair
+  mapId: MaybeRefOrGetter<string>
+  keyPair: MaybeRefOrGetter<AMapKeyPair>
 }
 
 export interface UseAMapReturn {
@@ -97,25 +105,46 @@ export function useAMap(options: UseAMapOptions): UseAMapReturn {
   const {mapId: id, keyPair} = options
   const map: ShallowRef<AMap.Map | null> = shallowRef(null)
 
-  onMounted(() => {
-    (window as any)._AMapSecurityConfig = {
-      serviceHost: (keyPair as AMapKeyHostPair).serviceHost,
-      securityJsCode: (keyPair as AMapKeySecretPair).secret,
-    }
+  let loadPromise: Ref<Promise<typeof AMap> | null> = shallowRef(null)
+  const stopWatchKeyPair = watch(
+    () => toValue(keyPair),
+    (keyPair) => {
+      console.log('密钥对变化，加载地图')
 
-    AMapLoader.load({
-      key: keyPair.key,
-      version: '2.0',
-    }).then((AMap) => {
-      // 复制一份，传入的参数可能是只读的，高德要改这个对象
-      const aMapOptions: AMap.MapOptions = {...options}
-      delete (aMapOptions as any).id
-      delete (aMapOptions as any).keyPair
+      tryOnMounted(() => {
+        (window as any)._AMapSecurityConfig = {
+          serviceHost: (keyPair as AMapKeyHostPair).serviceHost,
+          securityJsCode: (keyPair as AMapKeySecretPair).secret,
+        }
 
-      map.value = new AMap.Map(id, aMapOptions)
-    }).catch((e) => {
-      console.error(e)
-    })
+        loadPromise.value = AMapLoader.load({
+          key: keyPair.key,
+          version: '2.0',
+        })
+      })
+    },
+    {immediate: true},
+  )
+
+  const stopWatchForMap = watch(
+    () => [toValue(id), toValue(loadPromise)] as [string, Promise<typeof AMap> | null],
+    ([id, promise]) => {
+      console.log('地图加载器变化，创建地图实例')
+
+      promise?.then((AMap) => {
+        // 复制一份，传入的参数可能是只读的，高德要改这个对象
+        const aMapOptions: AMap.MapOptions = {...options}
+
+        map.value = new AMap.Map(id, aMapOptions)
+      }).catch((e) => {
+        console.error(e)
+      })
+    },
+  )
+
+  tryOnScopeDispose(() => {
+    stopWatchKeyPair()
+    stopWatchForMap()
   })
 
   return {map}
@@ -151,7 +180,7 @@ export function useAMapEventListener<EventType = AMap.EventType>(
   }
 
   const stopWatch = watch(
-    () => unref(target as MaybeRef<AMap.Eventable>),
+    () => toValue(target),
     (el) => {
       cleanup()
       if (!el)

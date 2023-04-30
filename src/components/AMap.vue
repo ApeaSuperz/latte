@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {defineComponent, provide, watch} from "vue";
+import {computed, defineComponent, provide, watch} from "vue";
 import {
   aMapInjectionKey,
   AMapKeyPair,
@@ -7,7 +7,7 @@ import {
   useAMap,
   UseAMapOptions
 } from "../utils/a-map.ts";
-import {generateUUID} from "../utils/random.ts";
+import {generateUuid} from "../utils/random.ts";
 
 defineComponent({
   name: 'LatteAMap',
@@ -31,9 +31,23 @@ function registerAMapComponent(fn: (map: AMap.Map) => void) {
   children.push(fn)
 }
 
-// FIXME: 上层传入的 mapId 变动，无法正确处理
-const mapId = props.mapId ?? generateUUID()
-const aMapOptions: UseAMapOptions = {...props, mapId}
+let lazyUuid: string | undefined = undefined
+const mapId = computed(() => {
+  if (props.mapId) {
+    return props.mapId
+  } else {
+    if (!lazyUuid) {
+      lazyUuid = generateUuid()
+    }
+    return lazyUuid
+  }
+})
+
+const keyPair = computed(() => {
+  return props.keyPair
+})
+
+const aMapOptions: UseAMapOptions = {...props, mapId, keyPair}
 const {map} = useAMap(aMapOptions)
 
 watch(map, (map) => {
