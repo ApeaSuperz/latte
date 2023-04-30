@@ -19,7 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "incremental": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [

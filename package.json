@@ -11,6 +11,8 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@amap/amap-jsapi-types": "^0.0.13",
+    "@vueuse/core": "^10.1.0",
+    "vant": "^4.2.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {

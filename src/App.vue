@@ -1,32 +1,87 @@
 <script lang="ts" setup>
-  import { NETWORKS, useAMap } from './utils/map.ts'
-  import { watch } from 'vue'
+import {CollectionPoint, DEFAULT_CENTER, DEFAULT_ZOOM, Network, NETWORKS} from "./utils/a-map.ts";
+import {useIdle} from "@vueuse/core";
+import {Ref, ref, watch} from "vue";
+import LatteAMap from "./components/AMap.vue";
+import AMapMarker from "./components/AMapMarker.vue";
+import {Icon} from "vant";
+import "vant/lib/icon/index.css";
+import AMapInfoWindow from "./components/AMapInfoWindow.vue";
 
-  const { map } = useAMap('map-container', {
-    viewMode: '3D',
-    center: [119.41565, 32.393669],
-    zoom: 11.5,
-  })
-  watch(map, (map) => {
-    for (const network of NETWORKS) {
-      for (const point of network.points) {
-        map?.add(new AMap.Marker({
-          position: new AMap.LngLat.from(point.geo),
-          content: network.marker,
-          offset: new AMap.Pixel(-13, -30),
-        }))
-      }
-    }
-  })
+const aMap = ref<InstanceType<typeof LatteAMap> | null>(null)
+
+const infoWindowPoint: Ref<CollectionPoint | null> = ref(null)
+
+function onPointClick(network: Network, pointIndex: number) {
+  aMap.value?.map?.setZoomAndCenter(20, network.points[pointIndex].geo)
+  infoWindowPoint.value = network.points[pointIndex]
+}
+
+function reset() {
+  infoWindowPoint.value = null
+  aMap.value?.reset()
+}
+
+const {idle} = useIdle()
+watch(idle, (isIdle) => {
+  if (isIdle) {
+    console.log('已闲置，重置地图')
+    reset()
+  }
+})
 </script>
 
 <template>
-  <div id="map-container"></div>
+  <LatteAMap ref="aMap"
+             :center="DEFAULT_CENTER"
+             :key-pair="{key: 'ca5e4ecf2567c7806d2c04b2c5742975', serviceHost: 'http://latte.hurring.cn/_AMapService'}"
+             :zoom="DEFAULT_ZOOM"
+             class="major-map">
+    <template v-for="network in NETWORKS">
+      <AMapMarker v-for="(point, index) in network.points"
+                  :key="network.name + '-' + point.name"
+                  :geo="point.geo"
+                  :offset="[-26, -60]"
+                  :title="point.name"
+                  @click="onPointClick(network, index)">
+        <img :src="network.image" alt="v" style="width: 50px; height: 68px"/>
+      </AMapMarker>
+    </template>
+
+    <AMapInfoWindow :auto-move="false"
+                    :geo="infoWindowPoint?.geo ?? [0, 0]"
+                    :visible="!!infoWindowPoint"
+                    @update:visible="infoWindowPoint = null">
+      <div style="width: 200px; height: 100px; background-color: white; border-radius: 10px; padding: 10px">
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px">{{ infoWindowPoint?.name }}</div>
+        <div style="font-size: 14px; color: #999999">{{ infoWindowPoint?.address }}</div>
+      </div>
+    </AMapInfoWindow>
+
+    <button class="reset-button" @click.stop="reset">
+      <Icon name="replay"/>
+    </button>
+  </LatteAMap>
 </template>
 
 <style scoped>
-    #map-container {
-        width: 100vw;
-        height: 100vh;
-    }
+.major-map {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.reset-button {
+    position: absolute;
+    right: 40px;
+    bottom: 100px;
+    font-size: 24px;
+    background-color: rgba(0, 0, 0, .3);
+    color: black;
+}
 </style>
