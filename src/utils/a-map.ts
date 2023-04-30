@@ -1,15 +1,7 @@
 import '@amap/amap-jsapi-types'
 import {InjectionKey, Ref, shallowRef, ShallowRef, watch} from "vue";
 import AMapLoader from "@amap/amap-jsapi-loader";
-import {
-  Arrayable,
-  Fn,
-  GeneralEventListener,
-  MaybeRefOrGetter,
-  toValue,
-  tryOnMounted,
-  tryOnScopeDispose
-} from "@vueuse/core";
+import {Arrayable, Fn, GeneralEventListener, MaybeRefOrGetter, toValue, tryOnScopeDispose} from "@vueuse/core";
 
 export interface CollectionPoint {
   name: string
@@ -80,6 +72,43 @@ export const NETWORKS: Network[] = [
 export const DEFAULT_CENTER: [number, number] = [119.41565, 32.393669]
 export const DEFAULT_ZOOM = 14
 
+let lazyAMapLoaderPromise: Promise<typeof AMap> | null = null
+
+export interface AMapLoaderOptions {
+  version?: string  // 指定要加载的 JSAPI 的版本，缺省时默认为 2.0
+  plugins?: string[]  //插件列表
+
+  // 是否加载 AMapUI，缺省不加载
+  AMapUI?: {
+    version?: string  // AMapUI 缺省 1.1
+    plugins?: string[]  // 需要加载的 AMapUI ui 插件
+  }
+
+  // 是否加载 Loca， 缺省不加载
+  Loca?: {
+    version?: string  // Loca 版本，缺省 1.3.2
+  }
+
+  keyPair: AMapKeyPair
+}
+
+export function initAMapLoader(config: AMapLoaderOptions) {
+  if (lazyAMapLoaderPromise)
+    return
+
+  (window as any)._AMapSecurityConfig = {
+    serviceHost: (config.keyPair as AMapKeyHostPair).serviceHost,
+    securityJsCode: (config.keyPair as AMapKeySecretPair).secret,
+  }
+
+  const options: any = {...config, key: config.keyPair.key}
+  delete options.keyPair
+  if (!options.version)
+    options.version = '2.0'
+
+  lazyAMapLoaderPromise = AMapLoader.load(options)
+}
+
 export interface AMapKeySecretPair {
   key: string
   secret: string
@@ -94,7 +123,6 @@ export type AMapKeyPair = AMapKeySecretPair | AMapKeyHostPair
 
 export interface UseAMapOptions extends AMap.MapOptions {
   mapId: MaybeRefOrGetter<string>
-  keyPair: MaybeRefOrGetter<AMapKeyPair>
 }
 
 export interface UseAMapReturn {
@@ -102,36 +130,18 @@ export interface UseAMapReturn {
 }
 
 export function useAMap(options: UseAMapOptions): UseAMapReturn {
-  const {mapId: id, keyPair} = options
+  const {mapId: id} = options
   const map: ShallowRef<AMap.Map | null> = shallowRef(null)
 
-  let loadPromise: Ref<Promise<typeof AMap> | null> = shallowRef(null)
-  const stopWatchKeyPair = watch(
-    () => toValue(keyPair),
-    (keyPair) => {
-      console.log('密钥对变化，加载地图')
+  const stopWatch = watch(
+    () => toValue(id),
+    (id) => {
+      console.log('地图 ID 变化，创建地图实例')
 
-      tryOnMounted(() => {
-        (window as any)._AMapSecurityConfig = {
-          serviceHost: (keyPair as AMapKeyHostPair).serviceHost,
-          securityJsCode: (keyPair as AMapKeySecretPair).secret,
-        }
+      if (!lazyAMapLoaderPromise)
+        throw new Error('请先调用 initAMapLoader() 初始化 AMapLoader')
 
-        loadPromise.value = AMapLoader.load({
-          key: keyPair.key,
-          version: '2.0',
-        })
-      })
-    },
-    {immediate: true},
-  )
-
-  const stopWatchForMap = watch(
-    () => [toValue(id), toValue(loadPromise)] as [string, Promise<typeof AMap> | null],
-    ([id, promise]) => {
-      console.log('地图加载器变化，创建地图实例')
-
-      promise?.then((AMap) => {
+      lazyAMapLoaderPromise.then((AMap) => {
         // 复制一份，传入的参数可能是只读的，高德要改这个对象
         const aMapOptions: AMap.MapOptions = {...options}
 
@@ -140,11 +150,11 @@ export function useAMap(options: UseAMapOptions): UseAMapReturn {
         console.error(e)
       })
     },
+    {immediate: true},
   )
 
   tryOnScopeDispose(() => {
-    stopWatchKeyPair()
-    stopWatchForMap()
+    stopWatch()
   })
 
   return {map}

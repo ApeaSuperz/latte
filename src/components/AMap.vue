@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import {computed, defineComponent, provide, watch} from "vue";
-import {
-  aMapInjectionKey,
-  AMapKeyPair,
-  registerAMapComponentFuncInjectionKey,
-  useAMap,
-  UseAMapOptions
-} from "../utils/a-map.ts";
+import {aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions} from "../utils/a-map.ts";
 import {generateUuid} from "../utils/random.ts";
 
 defineComponent({
@@ -15,7 +9,6 @@ defineComponent({
 
 const props = defineProps<{
   mapId?: string
-  keyPair: AMapKeyPair
   zoom?: number
   center?: [number, number]
   viewMode?: '2D' | '3D'
@@ -43,11 +36,7 @@ const mapId = computed(() => {
   }
 })
 
-const keyPair = computed(() => {
-  return props.keyPair
-})
-
-const aMapOptions: UseAMapOptions = {...props, mapId, keyPair}
+const aMapOptions: UseAMapOptions = {...props, mapId}
 const {map} = useAMap(aMapOptions)
 
 watch(map, (map) => {

@@ -34,7 +34,6 @@ watch(idle, (isIdle) => {
 <template>
   <LatteAMap ref="aMap"
              :center="DEFAULT_CENTER"
-             :key-pair="{key: 'ca5e4ecf2567c7806d2c04b2c5742975', serviceHost: 'http://latte.hurring.cn/_AMapService'}"
              :zoom="DEFAULT_ZOOM"
              class="major-map">
     <template v-for="network in NETWORKS">
