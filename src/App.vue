@@ -2,13 +2,10 @@
 import {CollectionPoint, DEFAULT_CENTER, DEFAULT_ZOOM, Network, NETWORKS} from "./utils/a-map.ts";
 import {useIdle} from "@vueuse/core";
 import {Ref, ref, watch} from "vue";
-import LatteAMap from "./components/AMap.vue";
-import AMapMarker from "./components/AMapMarker.vue";
-import {Icon} from "vant";
 import "vant/lib/icon/index.css";
-import AMapInfoWindow from "./components/AMapInfoWindow.vue";
+import AvMap from "./components/AvMap.vue";
 
-const aMap = ref<InstanceType<typeof LatteAMap> | null>(null)
+const aMap = ref<InstanceType<typeof AvMap> | null>(null)
 
 const infoWindowPoint: Ref<CollectionPoint | null> = ref(null)
 
@@ -32,35 +29,37 @@ watch(idle, (isIdle) => {
 </script>
 
 <template>
-  <LatteAMap ref="aMap"
-             :center="DEFAULT_CENTER"
-             :zoom="DEFAULT_ZOOM"
-             class="major-map">
+  <AvMap ref="aMap"
+         :center="DEFAULT_CENTER"
+         :zoom="DEFAULT_ZOOM"
+         class="major-map">
     <template v-for="network in NETWORKS">
-      <AMapMarker v-for="(point, index) in network.points"
-                  :key="network.name + '-' + point.name"
-                  :geo="point.geo"
-                  :offset="[-26, -60]"
-                  :title="point.name"
-                  @click="onPointClick(network, index)">
+      <AvMapMarker v-for="(point, index) in network.points"
+                   :key="network.name + '-' + point.name"
+                   :geo="point.geo"
+                   :offset="[-26, -60]"
+                   :title="point.name"
+                   @click="onPointClick(network, index)">
         <img :src="network.image" alt="v" style="width: 50px; height: 68px"/>
-      </AMapMarker>
+      </AvMapMarker>
     </template>
 
-    <AMapInfoWindow :auto-move="false"
-                    :geo="infoWindowPoint?.geo ?? [0, 0]"
-                    :visible="!!infoWindowPoint"
-                    @update:visible="infoWindowPoint = null">
+    <AvMapInfoWindow :auto-move="false"
+                     :geo="infoWindowPoint?.geo ?? [0, 0]"
+                     :visible="!!infoWindowPoint"
+                     @update:visible="infoWindowPoint = null">
       <div style="width: 200px; height: 100px; background-color: white; border-radius: 10px; padding: 10px">
         <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px">{{ infoWindowPoint?.name }}</div>
         <div style="font-size: 14px; color: #999999">{{ infoWindowPoint?.address }}</div>
       </div>
-    </AMapInfoWindow>
+    </AvMapInfoWindow>
 
     <button class="reset-button" @click.stop="reset">
-      <Icon name="replay"/>
+      <ElIcon>
+        <IEpAim/>
+      </ElIcon>
     </button>
-  </LatteAMap>
+  </AvMap>
 </template>
 
 <style scoped>
@@ -81,6 +80,8 @@ watch(idle, (isIdle) => {
     bottom: 100px;
     font-size: 24px;
     background-color: rgba(0, 0, 0, .3);
-    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

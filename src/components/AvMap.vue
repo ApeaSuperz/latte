@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import {computed, defineComponent, provide, watch} from "vue";
+import {computed, provide, watch} from "vue";
 import {aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions} from "../utils/a-map.ts";
 import {generateUuid} from "../utils/random.ts";
-
-defineComponent({
-  name: 'LatteAMap',
-})
 
 const props = defineProps<{
   mapId?: string
