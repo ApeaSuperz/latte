@@ -12,7 +12,10 @@ declare module '@vue/runtime-core' {
     AvMap: typeof import('./components/AvMap.vue')['default']
     AvMapInfoWindow: typeof import('./components/AvMapInfoWindow.vue')['default']
     AvMapMarker: typeof import('./components/AvMapMarker.vue')['default']
+    ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     IEpAim: typeof import('~icons/ep/aim')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }
