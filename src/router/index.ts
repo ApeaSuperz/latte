@@ -9,6 +9,19 @@ const routes: RouteRecordRaw[] = [
     },
     component: () => import('../views/IndexMap.vue'),
   },
+  {
+    path: '/admin',
+    children: [
+      {
+        path: 'login',
+        name: 'AdminLogin',
+        meta: {
+          title: '管理员登录',
+        },
+        component: () => import('../views/AdminLogin.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
