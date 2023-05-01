@@ -26,10 +26,6 @@ export default defineConfig({
     }),
 
     AutoImport({
-      // Auto import functions from Vue, e.g. ref, reactive, toRef...
-      // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-      imports: ['vue'],
-
       resolvers: [ElementPlusResolver(), IconsResolver({ prefix: 'Icon' })],
       dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
     }),
