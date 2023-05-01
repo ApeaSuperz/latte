@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {inject, ref, useSlots} from "vue";
-import {registerAMapComponentFuncInjectionKey, useAMapEventListener} from "../utils/a-map.ts";
+import { inject, ref, useSlots } from 'vue'
+import { registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map.ts'
 
 const props = defineProps<{
   geo: [number, number]
@@ -41,7 +41,7 @@ register?.((map: AMap.Map) => {
 <template>
   <div style="display: none">
     <div ref="content">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>

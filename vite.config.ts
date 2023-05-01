@@ -1,12 +1,13 @@
 import path from 'path'
-import {defineConfig} from 'vite'
+import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
-import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Inspect from 'vite-plugin-inspect'
+import EsLint from 'vite-plugin-eslint'
 
 const pathSrc = path.resolve(__dirname, 'src')
 
@@ -20,27 +21,25 @@ export default defineConfig({
   plugins: [
     Vue(),
 
+    EsLint({
+      include: ['src/**/*.ts', 'src/**/*.vue', 'src/*.ts', 'src/*.vue'],
+    }),
+
     AutoImport({
       // Auto import functions from Vue, e.g. ref, reactive, toRef...
       // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
       imports: ['vue'],
 
-      resolvers: [
-        ElementPlusResolver(),
-        IconsResolver({prefix: 'Icon'}),
-      ],
+      resolvers: [ElementPlusResolver(), IconsResolver({ prefix: 'Icon' })],
       dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
     }),
 
     Components({
-      resolvers: [
-        ElementPlusResolver(),
-        IconsResolver({enabledCollections: ['ep']}),
-      ],
+      resolvers: [ElementPlusResolver(), IconsResolver({ enabledCollections: ['ep'] })],
       dts: path.resolve(pathSrc, 'components.d.ts'),
     }),
 
-    Icons({autoInstall: true}),
+    Icons({ autoInstall: true }),
 
     Inspect(),
   ],

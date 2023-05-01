@@ -1,7 +1,7 @@
 import '@amap/amap-jsapi-types'
-import {InjectionKey, Ref, shallowRef, ShallowRef, watch} from "vue";
-import AMapLoader from "@amap/amap-jsapi-loader";
-import {Arrayable, Fn, GeneralEventListener, MaybeRefOrGetter, toValue, tryOnScopeDispose} from "@vueuse/core";
+import { InjectionKey, Ref, shallowRef, ShallowRef, watch } from 'vue'
+import AMapLoader from '@amap/amap-jsapi-loader'
+import { Arrayable, Fn, GeneralEventListener, MaybeRefOrGetter, toValue, tryOnScopeDispose } from '@vueuse/core'
 
 export interface CollectionPoint {
   name: string
@@ -11,29 +11,29 @@ export interface CollectionPoint {
 
 // 交通银行代收点
 export const BCM_POINTS: CollectionPoint[] = [
-  {name: '扬州分行营业部', address: '扬州市邗江中路477号', geo: [119.399563, 32.381203]},
-  {name: '扬州分行荷花支行', address: '扬州市荷花池路5号', geo: [119.430961, 32.379221]},
-  {name: '扬州分行竹西支行', address: '扬州市邗沟路60号', geo: [119.441582, 32.417127]},
-  {name: '扬州分行琼花支行', address: '扬州市文昌中路251号', geo: [119.44838, 32.394977]},
-  {name: '扬州分行润扬支行', address: '扬州市邗江区蒋王红旗大街1号', geo: [119.387752, 32.365451]},
+  { name: '扬州分行营业部', address: '扬州市邗江中路477号', geo: [119.399563, 32.381203] },
+  { name: '扬州分行荷花支行', address: '扬州市荷花池路5号', geo: [119.430961, 32.379221] },
+  { name: '扬州分行竹西支行', address: '扬州市邗沟路60号', geo: [119.441582, 32.417127] },
+  { name: '扬州分行琼花支行', address: '扬州市文昌中路251号', geo: [119.44838, 32.394977] },
+  { name: '扬州分行润扬支行', address: '扬州市邗江区蒋王红旗大街1号', geo: [119.387752, 32.365451] },
 ]
 
 // 邮政集团代收点
 export const EMS_POINTS: CollectionPoint[] = [
-  {name: '邗城邮政支局', address: '扬州市文汇西路209号', geo: [119.39965, 32.379639]},
-  {name: '文昌苑邮政支局', address: '扬州市广陵区曲江街道办观潮路719号', geo: [119.47025, 32.39231]},
-  {name: '头桥邮政支局', address: '扬州市头桥镇通达路90号', geo: [119.647174, 32.326026]},
-  {name: '杨庙邮政支局', address: '扬州市邗江区杨庙镇振兴路', geo: [119.338585, 32.414557]},
-  {name: '瓜洲邮政支局', address: '扬州市瓜洲镇洛家路62号', geo: [119.386044, 32.250741]},
+  { name: '邗城邮政支局', address: '扬州市文汇西路209号', geo: [119.39965, 32.379639] },
+  { name: '文昌苑邮政支局', address: '扬州市广陵区曲江街道办观潮路719号', geo: [119.47025, 32.39231] },
+  { name: '头桥邮政支局', address: '扬州市头桥镇通达路90号', geo: [119.647174, 32.326026] },
+  { name: '杨庙邮政支局', address: '扬州市邗江区杨庙镇振兴路', geo: [119.338585, 32.414557] },
+  { name: '瓜洲邮政支局', address: '扬州市瓜洲镇洛家路62号', geo: [119.386044, 32.250741] },
 ]
 
 // 降速银行代收点
 export const BJS_POINTS: CollectionPoint[] = [
-  {name: '广陵支行', address: '扬州市运河西路520号', geo: [119.46556, 32.388565]},
-  {name: '蜀冈支行', address: '扬州市扬子江北路959号', geo: [119.398065, 32.436626]},
-  {name: '渡江桥支行', address: '扬州市渡江南路112号', geo: [119.445502, 32.370886]},
-  {name: '文昌阁支行', address: '扬州市汶河南路71号', geo: [119.43361, 32.394464]},
-  {name: '分行营业部', address: '扬州市文昌西路525号10号楼', geo: [119.383991, 32.389077]},
+  { name: '广陵支行', address: '扬州市运河西路520号', geo: [119.46556, 32.388565] },
+  { name: '蜀冈支行', address: '扬州市扬子江北路959号', geo: [119.398065, 32.436626] },
+  { name: '渡江桥支行', address: '扬州市渡江南路112号', geo: [119.445502, 32.370886] },
+  { name: '文昌阁支行', address: '扬州市汶河南路71号', geo: [119.43361, 32.394464] },
+  { name: '分行营业部', address: '扬州市文昌西路525号10号楼', geo: [119.383991, 32.389077] },
 ]
 
 const MARKER_HTML =
@@ -75,36 +75,33 @@ export const DEFAULT_ZOOM = 14
 let lazyAMapLoaderPromise: Promise<typeof AMap> | null = null
 
 export interface AMapLoaderOptions {
-  version?: string  // 指定要加载的 JSAPI 的版本，缺省时默认为 2.0
-  plugins?: string[]  //插件列表
+  version?: string // 指定要加载的 JSAPI 的版本，缺省时默认为 2.0
+  plugins?: string[] //插件列表
 
   // 是否加载 AMapUI，缺省不加载
   AMapUI?: {
-    version?: string  // AMapUI 缺省 1.1
-    plugins?: string[]  // 需要加载的 AMapUI ui 插件
+    version?: string // AMapUI 缺省 1.1
+    plugins?: string[] // 需要加载的 AMapUI ui 插件
   }
 
   // 是否加载 Loca， 缺省不加载
   Loca?: {
-    version?: string  // Loca 版本，缺省 1.3.2
+    version?: string // Loca 版本，缺省 1.3.2
   }
 
   keyPair: AMapKeyPair
 }
 
 export function initAMapLoader(config: AMapLoaderOptions) {
-  if (lazyAMapLoaderPromise)
-    return
-
-  (window as any)._AMapSecurityConfig = {
+  if (lazyAMapLoaderPromise) return
+  ;(window as any)._AMapSecurityConfig = {
     serviceHost: (config.keyPair as AMapKeyHostPair).serviceHost,
     securityJsCode: (config.keyPair as AMapKeySecretPair).secret,
   }
 
-  const options: any = {...config, key: config.keyPair.key}
+  const options: any = { ...config, key: config.keyPair.key }
   delete options.keyPair
-  if (!options.version)
-    options.version = '2.0'
+  if (!options.version) options.version = '2.0'
 
   lazyAMapLoaderPromise = AMapLoader.load(options)
 }
@@ -130,7 +127,7 @@ export interface UseAMapReturn {
 }
 
 export function useAMap(options: UseAMapOptions): UseAMapReturn {
-  const {mapId: id} = options
+  const { mapId: id } = options
   const map: ShallowRef<AMap.Map | null> = shallowRef(null)
 
   const stopWatch = watch(
@@ -138,26 +135,27 @@ export function useAMap(options: UseAMapOptions): UseAMapReturn {
     (id) => {
       console.log('地图 ID 变化，创建地图实例')
 
-      if (!lazyAMapLoaderPromise)
-        throw new Error('请先调用 initAMapLoader() 初始化 AMapLoader')
+      if (!lazyAMapLoaderPromise) throw new Error('请先调用 initAMapLoader() 初始化 AMapLoader')
 
-      lazyAMapLoaderPromise.then((AMap) => {
-        // 复制一份，传入的参数可能是只读的，高德要改这个对象
-        const aMapOptions: AMap.MapOptions = {...options}
+      lazyAMapLoaderPromise
+        .then((AMap) => {
+          // 复制一份，传入的参数可能是只读的，高德要改这个对象
+          const aMapOptions: AMap.MapOptions = { ...options }
 
-        map.value = new AMap.Map(id, aMapOptions)
-      }).catch((e) => {
-        console.error(e)
-      })
+          map.value = new AMap.Map(id, aMapOptions)
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     },
-    {immediate: true},
+    { immediate: true }
   )
 
   tryOnScopeDispose(() => {
     stopWatch()
   })
 
-  return {map}
+  return { map }
 }
 
 /**
@@ -171,16 +169,14 @@ export function useAMap(options: UseAMapOptions): UseAMapReturn {
 export function useAMapEventListener<EventType = AMap.EventType>(
   target: MaybeRefOrGetter<AMap.Eventable>,
   event: Arrayable<EventType>,
-  listener: Arrayable<GeneralEventListener<any>>,
+  listener: Arrayable<GeneralEventListener<any>>
 ): Fn {
-  if (!Array.isArray(event))
-    event = [event]
-  if (!Array.isArray(listener))
-    listener = [listener]
+  if (!Array.isArray(event)) event = [event]
+  if (!Array.isArray(listener)) listener = [listener]
 
-  const cleanups: Function[] = []
+  const cleanups: Fn[] = []
   const cleanup = () => {
-    cleanups.forEach(fn => fn())
+    cleanups.forEach((fn) => fn())
     cleanups.length = 0
   }
 
@@ -193,16 +189,15 @@ export function useAMapEventListener<EventType = AMap.EventType>(
     () => toValue(target),
     (el) => {
       cleanup()
-      if (!el)
-        return
+      if (!el) return
 
       cleanups.push(
         ...(event as AMap.EventType[]).flatMap((event) => {
-          return (listener as Function[]).map((listener) => register(el, event, listener))
-        }),
+          return (listener as Fn[]).map((listener) => register(el, event, listener))
+        })
       )
     },
-    {immediate: true, flush: 'post'},
+    { immediate: true, flush: 'post' }
   )
 
   const stop = () => {
@@ -216,11 +211,11 @@ export function useAMapEventListener<EventType = AMap.EventType>(
 }
 
 export const aMapInjectionKey = Symbol('AMap-Instance') as InjectionKey<Ref<AMap.Map | null>>
-export const registerAMapComponentFuncInjectionKey =
-  Symbol('AMap-Component-Register-Function') as InjectionKey<(register: (map: AMap.Map) => void) => void>
+export const registerAMapComponentFuncInjectionKey = Symbol('AMap-Component-Register-Function') as InjectionKey<
+  (register: (map: AMap.Map) => void) => void
+>
 
 export function isAMap(obj: any): obj is AMap.Map {
-  if (!obj)
-    return false
+  if (!obj) return false
   return obj instanceof AMap.Map
 }

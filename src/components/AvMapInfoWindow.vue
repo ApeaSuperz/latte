@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener} from "../utils/a-map.ts";
-import {inject, Ref, ref, watch} from "vue";
+import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map.ts'
+import { inject, Ref, ref, watch } from 'vue'
 
 const props = defineProps<{
   geo: [number, number]
@@ -31,28 +31,30 @@ register?.(() => {
 })
 
 function open(geo?: [number, number]) {
-  if (map?.value) {
-    infoWindow.value?.open(map.value!, geo ?? props.geo)
-  }
+  const m = map?.value
+  if (m) infoWindow.value?.open(m, geo ?? props.geo)
 }
 
 function close() {
   infoWindow.value?.close()
 }
 
-watch(() => [props.visible, props.geo], ([visible]) => {
-  if (visible) {
-    open()
-  } else {
-    close()
+watch(
+  () => [props.visible, props.geo],
+  ([visible]) => {
+    if (visible) {
+      open()
+    } else {
+      close()
+    }
   }
-})
+)
 </script>
 
 <template>
   <div style="display: none">
     <div ref="content">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
