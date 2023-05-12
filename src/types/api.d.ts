@@ -21,6 +21,10 @@ export interface AgentsGroup {
   name: string
 }
 
+export interface AgentsGroupWithAgents extends AgentsGroup {
+  agents: Agent[]
+}
+
 export interface Agent {
   id: number
   name: string
@@ -28,4 +32,9 @@ export interface Agent {
   longitude: number
   latitude: number
   businessTime: BusinessHour[]
+}
+
+export interface CollectionPoints {
+  businessHalls: BusinessHall[]
+  agentsGroups: AgentsGroupWithAgents[]
 }

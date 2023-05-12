@@ -1,16 +1,38 @@
 <script lang="ts" setup>
-import { CollectionPoint, DEFAULT_CENTER, DEFAULT_ZOOM, Network, NETWORKS } from '../utils/a-map.ts'
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from '../utils/a-map.ts'
 import { useIdle } from '@vueuse/core'
 import { Ref, ref, watch } from 'vue'
-import AvMap from '../components/AvMap.vue'
+import AvMap from '@/components/AvMap.vue'
+import { Agent, AgentsGroupWithAgents, BusinessHall, CollectionPoints } from '@/types/api'
+import request from '@/utils/request.ts'
+import { AxiosResponse } from 'axios'
+
+const businessHalls = ref<BusinessHall[]>([])
+const agentsGroups = ref<AgentsGroupWithAgents[]>([])
+request('/collection-points').then((res: AxiosResponse<CollectionPoints>) => {
+  if (res.status === 200) {
+    businessHalls.value = res.data.businessHalls
+    agentsGroups.value = res.data.agentsGroups
+  }
+})
 
 const aMap = ref<InstanceType<typeof AvMap> | null>(null)
 
-const infoWindowPoint: Ref<CollectionPoint | null> = ref(null)
+const infoWindowPoint: Ref<BusinessHall | Agent | null> = ref(null)
 
-function onPointClick(network: Network, pointIndex: number) {
-  aMap.value?.map?.setZoomAndCenter(18, network.points[pointIndex].geo)
-  infoWindowPoint.value = network.points[pointIndex]
+function onPointClick(point: BusinessHall | Agent) {
+  aMap.value?.map?.setZoomAndCenter(18, [point.longitude, point.latitude])
+  infoWindowPoint.value = point
+}
+
+function isBusinessHall(point?: BusinessHall | Agent | null): point is BusinessHall {
+  if (!point) return false
+  return (point as BusinessHall).landmark !== undefined
+}
+
+function isAgent(point?: BusinessHall | Agent | null): point is Agent {
+  if (!point) return false
+  return (point as BusinessHall).landmark === undefined
 }
 
 function reset() {
@@ -29,27 +51,35 @@ watch(idle, (isIdle) => {
 
 <template>
   <AvMap ref="aMap" :center="DEFAULT_CENTER" :zoom="DEFAULT_ZOOM" class="major-map">
-    <template v-for="network in NETWORKS">
+    <AvMapMarker
+      v-for="hall in businessHalls"
+      :key="hall.name"
+      :geo="[hall.longitude, hall.latitude]"
+      :title="hall.name"
+      @click="onPointClick(hall)"
+    />
+    <template v-for="agentsGroup in agentsGroups">
       <AvMapMarker
-        v-for="(point, index) in network.points"
-        :key="network.name + '-' + point.name"
-        :geo="point.geo"
-        :offset="[-26, -60]"
-        :title="point.name"
-        @click="onPointClick(network, index)"
-      >
-        <img :src="network.image" alt="v" style="width: 50px; height: 68px" />
-      </AvMapMarker>
+        v-for="agent in agentsGroup.agents"
+        :key="agentsGroup.name + '-' + agent.name"
+        :geo="[agent.longitude, agent.latitude]"
+        :title="agent.name"
+        @click="onPointClick(agent)"
+      />
     </template>
 
     <AvMapInfoWindow
       :auto-move="false"
-      :geo="infoWindowPoint?.geo ?? [0, 0]"
+      :geo="[infoWindowPoint?.longitude ?? 0, infoWindowPoint?.latitude ?? 0]"
       :visible="!!infoWindowPoint"
       @update:visible="infoWindowPoint = null"
     >
       <div style="width: 200px; height: 100px; background-color: white; border-radius: 10px; padding: 10px">
-        <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px">{{ infoWindowPoint?.name }}</div>
+        <div class="info-window-title">
+          {{ infoWindowPoint?.name }}
+          <ElTag v-if="isBusinessHall(infoWindowPoint)" type="success">营业厅</ElTag>
+          <ElTag v-else-if="isAgent(infoWindowPoint)">代理点</ElTag>
+        </div>
         <div style="font-size: 14px; color: #999999">{{ infoWindowPoint?.address }}</div>
       </div>
     </AvMapInfoWindow>
@@ -83,5 +113,12 @@ watch(idle, (isIdle) => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.info-window-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
 }
 </style>
