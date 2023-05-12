@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, ref, useSlots } from 'vue'
+import { inject, ref, useSlots, watch } from 'vue'
 import { registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map.ts'
 
 const props = defineProps<{
@@ -17,7 +17,13 @@ const register = inject(registerAMapComponentFuncInjectionKey)
 const slots = useSlots()
 const content = ref<HTMLDivElement>()
 
-register?.((map: AMap.Map) => {
+let marker: AMap.Marker | undefined = undefined
+
+function init(map: AMap.Map) {
+  if (marker) {
+    marker.setMap(null)
+  }
+
   const markerOptions: AMap.MarkerOptions = {
     position: props.geo,
     offset: props.offset ? new AMap.Pixel(props.offset[0], props.offset[1]) : undefined,
@@ -28,13 +34,23 @@ register?.((map: AMap.Map) => {
     markerOptions.content = content.value
   }
 
-  const marker = new AMap.Marker(markerOptions)
+  marker = new AMap.Marker(markerOptions)
 
   useAMapEventListener(marker, 'click', () => {
     emit('click')
   })
 
   marker.setMap(map)
+}
+
+register?.((map: AMap.Map) => {
+  watch(
+    props,
+    () => {
+      init(map)
+    },
+    { immediate: true }
+  )
 })
 </script>
 

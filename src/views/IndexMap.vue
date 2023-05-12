@@ -9,7 +9,7 @@ const aMap = ref<InstanceType<typeof AvMap> | null>(null)
 const infoWindowPoint: Ref<CollectionPoint | null> = ref(null)
 
 function onPointClick(network: Network, pointIndex: number) {
-  aMap.value?.map?.setZoomAndCenter(20, network.points[pointIndex].geo)
+  aMap.value?.map?.setZoomAndCenter(18, network.points[pointIndex].geo)
   infoWindowPoint.value = network.points[pointIndex]
 }
 

@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+import { ElMessageBox } from 'element-plus'
+import request from '../utils/request.ts'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user.ts'
 
 const account = reactive({
   username: '',
@@ -17,13 +21,43 @@ watch(width, (width) => {
   }
 })
 
+const loading = ref(false)
+const router = useRouter()
+const user = useUserStore()
+
 function login() {
-  // TODO
+  loading.value = true
+  request('/authenticate', {
+    method: 'POST',
+    data: account,
+  })
+    .then((res) => {
+      user.credentials = res.data.credentials
+
+      // TODO: 处理 redirect
+      router.push('/admin/business-halls')
+    })
+    .catch((err: Error) => {
+      ElMessageBox.alert(err?.message ?? '未知错误', '登录失败', {
+        confirmButtonText: '确定',
+        type: 'error',
+      })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+function openForgetPasswordTip() {
+  ElMessageBox.alert('本系统半封闭，无账号注册和密码找回功能，请联系管理员重置密码。', '忘记了密码？', {
+    confirmButtonText: '确定',
+    type: 'warning',
+  })
 }
 </script>
 
 <template>
-  <div class="container">
+  <div class="page-container">
     <div class="title">登录到 Latte 管理页</div>
     <ElForm :model="account" :size="size" class="form" label-position="right" label-width="4em">
       <ElFormItem label="用户名">
@@ -32,13 +66,21 @@ function login() {
       <ElFormItem label="密码">
         <ElInput v-model="account.password" show-password />
       </ElFormItem>
-      <ElButton class="login-button" type="primary" @click="login">登录</ElButton>
+      <ElRow>
+        <ElCol :span="6" />
+        <ElCol :span="12">
+          <ElButton :loading="loading" class="login-button" type="primary" @click="login">登录</ElButton>
+        </ElCol>
+        <ElCol :span="6">
+          <ElButton text @click="openForgetPasswordTip">忘记密码</ElButton>
+        </ElCol>
+      </ElRow>
     </ElForm>
   </div>
 </template>
 
 <style scoped>
-.container {
+.page-container {
   position: relative;
   width: 100%;
   height: 100%;

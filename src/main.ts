@@ -2,10 +2,18 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { initAMapLoader } from './utils/a-map.ts'
-import router from './router'
+import { setupRouter } from './router'
+import { createPinia } from 'pinia'
+import './permission'
 
 initAMapLoader({
   keyPair: { key: 'ca5e4ecf2567c7806d2c04b2c5742975', serviceHost: 'http://latte.hurring.cn/_AMapService' },
 })
 
-createApp(App).use(router).mount('#app')
+const pinia = createPinia()
+
+const app = createApp(App).use(pinia)
+
+setupRouter(app)
+
+app.mount('#app')

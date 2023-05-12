@@ -18,6 +18,10 @@ const children: ((map: AMap.Map) => void)[] = []
 
 function registerAMapComponent(fn: (map: AMap.Map) => void) {
   children.push(fn)
+
+  // 如果地图已经就绪，立即执行一次回调
+  const m = map.value
+  if (m) fn(m)
 }
 
 let lazyUuid: string | undefined = undefined

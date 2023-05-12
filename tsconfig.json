@@ -4,6 +4,10 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "typesRoots": ["./node_modules/@types", "./types"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -21,6 +25,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*", "types/**/*.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
