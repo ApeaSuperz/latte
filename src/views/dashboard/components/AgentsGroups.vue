@@ -2,11 +2,11 @@
 import { Delete, Plus } from '@element-plus/icons-vue'
 import { reactive, Ref, ref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator.ts'
-import { Agent, AgentsGroup } from '@/types/api'
+import { Agent, AgentsGroup, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
 import request from '@/utils/request.ts'
 import { find, findIndex, remove } from 'lodash'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, TreeNode } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
 
 interface LocalBusinessHour {
@@ -202,17 +202,17 @@ function localizeAgent(agent: Agent, group: number): LocalAgent {
       ref({
         id: hour.id,
         time: [new Date('1970-1-1 ' + hour.open), new Date('1970-1-1 ' + hour.close)],
-      })
+      } as LocalBusinessHour)
     )
   }
 
   return localAgent
 }
 
-function loadAgents(row: LocalAgentsGroup, treeNode: unknown, resolve: (data: LocalAgent[] | undefined) => void) {
+function loadAgents(row: LocalAgentsGroup, _: TreeNode, resolve: (data: LocalAgent[]) => void) {
   request(`/agents-groups/${-row.id}/agents`).then((res) => {
-    const localizedAgents = res.data?.map((agent: Agent) => localizeAgent(agent, row.id))
-    row.agents = localizedAgents ?? []
+    const localizedAgents = res.data?.map((agent: Agent) => localizeAgent(agent, row.id)) ?? []
+    row.agents = localizedAgents
     resolve(localizedAgents)
   })
 }
@@ -254,7 +254,7 @@ function saveAgent() {
     longitude: parseFloat(editingAgent.longitude),
     latitude: parseFloat(editingAgent.latitude),
     group: Math.abs(editingAgent.group),
-    businessTime: [],
+    businessTime: [] as (Omit<BusinessHour, 'id'> & { id?: number })[],
   }
 
   // 添加营业时间

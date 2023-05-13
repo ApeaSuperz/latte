@@ -5,7 +5,7 @@ import { Delete, Plus } from '@element-plus/icons-vue'
 import { useValidator } from '@/hooks/web/useValidator.ts'
 import { ElMessageBox } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
-import { BusinessHall } from '@/types/api'
+import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
 import { findIndex } from 'lodash'
 
@@ -47,7 +47,7 @@ function setDialogBusinessHall(businessHall?: BusinessHall) {
   for (let weekday = 1; weekday <= 7; weekday++) {
     dialogBusinessHall.businessHours.push([])
     if (businessHall?.businessTime) {
-      const parsedBusinessHours = businessHall.businessTime
+      const parsedBusinessHours: Ref<LocalBusinessHour>[] = businessHall.businessTime
         .filter((time) => time.weekday === weekday)
         .map((time) => {
           const [openHour, openMinute] = time.open.split(':')
@@ -58,7 +58,7 @@ function setDialogBusinessHall(businessHall?: BusinessHall) {
               new Date(0, 0, 0, parseInt(openHour, 10), parseInt(openMinute, 10)),
               new Date(0, 0, 0, parseInt(closeHour, 10), parseInt(closeMinute, 10)),
             ],
-          })
+          } as LocalBusinessHour)
         })
       dialogBusinessHall.businessHours[weekday - 1].push(...parsedBusinessHours)
     }
@@ -154,7 +154,7 @@ function save() {
     traffic: dialogBusinessHall.traffic,
     latitude: dialogBusinessHall.latitude,
     longitude: dialogBusinessHall.longitude,
-    businessTime: [],
+    businessTime: [] as (Omit<BusinessHour, 'id'> & { id?: number })[],
     iconUrl: null, // TODO
     iconColor: null,
     iconBackgroundColor: null,
