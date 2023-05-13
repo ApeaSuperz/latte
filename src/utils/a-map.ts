@@ -230,9 +230,7 @@ export function getCollectionPointLocationByKeywords(type: 'bank' | 'hall', ...k
         types: type === 'bank' ? '160100' : '071000',
       })
 
-      placeSearch.search(keywords.join(''), (status: any, result: any) => {
-        console.log(status)
-        console.log(result)
+      placeSearch.search(keywords.join('|'), (status: any, result: any) => {
         if (status === 'complete') {
           const poi = result.poiList.pois[0]
           resolve([poi.location.lng, poi.location.lat])
