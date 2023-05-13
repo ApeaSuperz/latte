@@ -219,3 +219,27 @@ export function isAMap(obj: any): obj is AMap.Map {
   if (!obj) return false
   return obj instanceof AMap.Map
 }
+
+export function getCollectionPointLocationByKeywords(type: 'bank' | 'hall', ...keywords: string[]) {
+  return new Promise<[number, number]>((resolve, reject) => {
+    AMap.plugin('AMap.PlaceSearch', () => {
+      const placeSearch = new (AMap as any).PlaceSearch({
+        pageSize: 1,
+        pageIndex: 1,
+        city: '0514',
+        types: type === 'bank' ? '160100' : '071000',
+      })
+
+      placeSearch.search(keywords.join(''), (status: any, result: any) => {
+        console.log(status)
+        console.log(result)
+        if (status === 'complete') {
+          const poi = result.poiList.pois[0]
+          resolve([poi.location.lng, poi.location.lat])
+        } else {
+          reject(new Error('未找到地点'))
+        }
+      })
+    })
+  })
+}

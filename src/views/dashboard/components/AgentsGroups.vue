@@ -8,6 +8,7 @@ import request from '@/utils/request.ts'
 import { find, findIndex, remove } from 'lodash'
 import { ElMessageBox, TreeNode } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
+import { getCollectionPointLocationByKeywords } from '@/utils/a-map.ts'
 
 interface LocalBusinessHour {
   id?: number
@@ -241,9 +242,9 @@ function deleteBusinessHours(weekday: number, index: number) {
 }
 
 function fetchGeoByAddress() {
-  ElMessageBox.alert('该功能暂未实现', '推断坐标', {
-    confirmButtonText: '确定',
-    type: 'info',
+  getCollectionPointLocationByKeywords('bank', editingAgent.name, editingAgent.address).then((geo) => {
+    editingAgent.longitude = geo[0].toString()
+    editingAgent.latitude = geo[1].toString()
   })
 }
 

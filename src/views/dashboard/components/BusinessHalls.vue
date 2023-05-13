@@ -8,6 +8,7 @@ import AvMap from '@/components/AvMap.vue'
 import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
 import { findIndex } from 'lodash'
+import { getCollectionPointLocationByKeywords } from '@/utils/a-map.ts'
 
 const businessHalls = ref<BusinessHall[]>([])
 
@@ -93,9 +94,9 @@ const rules = {
 }
 
 function fetchGeoByAddress() {
-  ElMessageBox.alert('该功能暂未实现', '推断坐标', {
-    confirmButtonText: '确定',
-    type: 'info',
+  getCollectionPointLocationByKeywords('hall', dialogBusinessHall.name, dialogBusinessHall.address).then((geo) => {
+    dialogBusinessHall.longitude = geo[0].toString()
+    dialogBusinessHall.latitude = geo[1].toString()
   })
 }
 
@@ -233,81 +234,83 @@ function save() {
       </ElTableColumn>
     </ElTable>
 
-    <ElDialog v-model="showDialog" :close-on-click-modal="false" :title="dialogTitle">
-      <ElForm :model="dialogBusinessHall" :rules="rules">
-        <ElFormItem label="名称" prop="name">
-          <ElInput v-model="dialogBusinessHall.name" />
-        </ElFormItem>
-        <ElFormItem label="地址" prop="address">
-          <ElInput v-model="dialogBusinessHall.address" />
-        </ElFormItem>
-        <ElFormItem label="地标建筑" prop="landmark">
-          <ElInput v-model="dialogBusinessHall.landmark" />
-        </ElFormItem>
-        <ElFormItem label="交通方式" prop="traffic">
-          <ElInput v-model="dialogBusinessHall.traffic" />
-        </ElFormItem>
-        <ElRow :gutter="10">
-          <ElCol :span="11">
-            <ElFormItem label="经度" prop="longitude">
-              <ElInput v-model="dialogBusinessHall.longitude" @change="updateSelectorMap" />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="11">
-            <ElFormItem label="纬度" prop="latitude">
-              <ElInput v-model="dialogBusinessHall.latitude" @change="updateSelectorMap" />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="2">
-            <ElTooltip content="根据地址推断">
-              <ElButton text type="primary" @click="fetchGeoByAddress">
-                <ElIcon size="18px">
-                  <IEpMapLocation />
-                </ElIcon>
-              </ElButton>
-            </ElTooltip>
-          </ElCol>
-        </ElRow>
-        <ElFormItem>
-          <AvMap
-            ref="selectorMap"
-            :center="
-              dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length
-                ? [parseFloat(dialogBusinessHall.longitude), parseFloat(dialogBusinessHall.latitude)]
-                : undefined
-            "
-            class="selector-map"
-          >
-            <AvMapMarker
-              v-if="dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length"
-              :geo="[parseFloat(dialogBusinessHall.longitude), parseFloat(dialogBusinessHall.latitude)]"
-              :title="dialogBusinessHall.name"
-            />
-          </AvMap>
-        </ElFormItem>
-        <ElFormItem label="营业时间" prop="businessHours">
-          <div class="business-hours-list">
-            <div v-for="(day, index) in ['一', '二', '三', '四', '五', '六', '天']" :key="day" class="single-day">
-              <div class="header">
-                <div class="weekday">周{{ day }}</div>
-                <ElButton :icon="Plus as any" circle size="small" type="primary" @click="addBusinessHours(index)" />
-              </div>
-              <span v-if="dialogBusinessHall.businessHours[index].length === 0">休息</span>
-              <div v-for="(time, i) in dialogBusinessHall.businessHours[index]" :key="day + '-' + i" class="values">
-                <ElTimePicker v-model="time.value.time" :disabled-seconds="() => makeRange(0, 59)" is-range />
-                <ElButton
-                  :icon="Delete as any"
-                  circle
-                  class="delete-business-hours-button"
-                  size="small"
-                  type="danger"
-                  @click="deleteBusinessHours(index, i)"
-                />
+    <ElDialog v-model="showDialog" :close-on-click-modal="false" :title="dialogTitle" destroy-on-close draggable>
+      <ElScrollbar height="500px">
+        <ElForm :model="dialogBusinessHall" :rules="rules" class="form-in-scrollbar">
+          <ElFormItem label="名称" prop="name">
+            <ElInput v-model="dialogBusinessHall.name" />
+          </ElFormItem>
+          <ElFormItem label="地址" prop="address">
+            <ElInput v-model="dialogBusinessHall.address" />
+          </ElFormItem>
+          <ElFormItem label="地标建筑" prop="landmark">
+            <ElInput v-model="dialogBusinessHall.landmark" />
+          </ElFormItem>
+          <ElFormItem label="交通方式" prop="traffic">
+            <ElInput v-model="dialogBusinessHall.traffic" />
+          </ElFormItem>
+          <ElRow :gutter="10">
+            <ElCol :span="11">
+              <ElFormItem label="经度" prop="longitude">
+                <ElInput v-model="dialogBusinessHall.longitude" @change="updateSelectorMap" />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="11">
+              <ElFormItem label="纬度" prop="latitude">
+                <ElInput v-model="dialogBusinessHall.latitude" @change="updateSelectorMap" />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="2">
+              <ElTooltip content="根据地址推断">
+                <ElButton text type="primary" @click="fetchGeoByAddress">
+                  <ElIcon size="18px">
+                    <IEpMapLocation />
+                  </ElIcon>
+                </ElButton>
+              </ElTooltip>
+            </ElCol>
+          </ElRow>
+          <ElFormItem>
+            <AvMap
+              ref="selectorMap"
+              :center="
+                dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length
+                  ? [parseFloat(dialogBusinessHall.longitude), parseFloat(dialogBusinessHall.latitude)]
+                  : undefined
+              "
+              class="selector-map"
+            >
+              <AvMapMarker
+                v-if="dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length"
+                :geo="[parseFloat(dialogBusinessHall.longitude), parseFloat(dialogBusinessHall.latitude)]"
+                :title="dialogBusinessHall.name"
+              />
+            </AvMap>
+          </ElFormItem>
+          <ElFormItem label="营业时间" prop="businessHours">
+            <div class="business-hours-list">
+              <div v-for="(day, index) in ['一', '二', '三', '四', '五', '六', '天']" :key="day" class="single-day">
+                <div class="header">
+                  <div class="weekday">周{{ day }}</div>
+                  <ElButton :icon="Plus as any" circle size="small" type="primary" @click="addBusinessHours(index)" />
+                </div>
+                <span v-if="dialogBusinessHall.businessHours[index].length === 0">休息</span>
+                <div v-for="(time, i) in dialogBusinessHall.businessHours[index]" :key="day + '-' + i" class="values">
+                  <ElTimePicker v-model="time.value.time" :disabled-seconds="() => makeRange(0, 59)" is-range />
+                  <ElButton
+                    :icon="Delete as any"
+                    circle
+                    class="delete-business-hours-button"
+                    size="small"
+                    type="danger"
+                    @click="deleteBusinessHours(index, i)"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </ElFormItem>
-      </ElForm>
+          </ElFormItem>
+        </ElForm>
+      </ElScrollbar>
 
       <template #footer>
         <ElButton @click="showDialog = false">取消</ElButton>
@@ -373,5 +376,10 @@ function save() {
 
 .delete-business-hours-button {
   margin-left: 10px;
+}
+
+.form-in-scrollbar {
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 </style>
