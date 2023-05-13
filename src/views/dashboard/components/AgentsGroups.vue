@@ -242,10 +242,17 @@ function deleteBusinessHours(weekday: number, index: number) {
 }
 
 function fetchGeoByAddress() {
-  getCollectionPointLocationByKeywords('bank', editingAgent.name, editingAgent.address).then((geo) => {
-    editingAgent.longitude = geo[0].toString()
-    editingAgent.latitude = geo[1].toString()
-  })
+  getCollectionPointLocationByKeywords('bank', editingAgent.name, editingAgent.address)
+    .then((geo) => {
+      editingAgent.longitude = geo[0].toString()
+      editingAgent.latitude = geo[1].toString()
+    })
+    .catch((err: Error) => {
+      ElMessageBox.alert('高德 API 响应：' + err.message, '获取坐标失败', {
+        confirmButtonText: '确定',
+        type: 'error',
+      })
+    })
 }
 
 function saveAgent() {

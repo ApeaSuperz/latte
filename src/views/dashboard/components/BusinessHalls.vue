@@ -94,10 +94,17 @@ const rules = {
 }
 
 function fetchGeoByAddress() {
-  getCollectionPointLocationByKeywords('hall', dialogBusinessHall.name, dialogBusinessHall.address).then((geo) => {
-    dialogBusinessHall.longitude = geo[0].toString()
-    dialogBusinessHall.latitude = geo[1].toString()
-  })
+  getCollectionPointLocationByKeywords('hall', dialogBusinessHall.name, dialogBusinessHall.address)
+    .then((geo) => {
+      dialogBusinessHall.longitude = geo[0].toString()
+      dialogBusinessHall.latitude = geo[1].toString()
+    })
+    .catch((err: Error) => {
+      ElMessageBox.alert('高德 API 响应：' + err.message, '获取坐标失败', {
+        confirmButtonText: '确定',
+        type: 'error',
+      })
+    })
 }
 
 function addBusinessHours(weekday: number) {

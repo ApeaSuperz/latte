@@ -235,7 +235,7 @@ export function getCollectionPointLocationByKeywords(type: 'bank' | 'hall', ...k
           const poi = result.poiList.pois[0]
           resolve([poi.location.lng, poi.location.lat])
         } else {
-          reject(new Error('未找到地点'))
+          reject(new Error(status))
         }
       })
     })
