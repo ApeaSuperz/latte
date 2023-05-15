@@ -1,7 +1,7 @@
 :root {
   --dark-bg-color: #293146;
 
-  --left-menu-border-color: '#eee';
+  --left-menu-border-color: 'inherit';
   --left-menu-max-width: 200px;
   --left-menu-min-width: 64px;
   --left-menu-bg-color: #00796A;
@@ -15,7 +15,7 @@
   --logo-title-text-color: #fff;
   --logo-border-color: #006b5d;
 
-  --top-header-bg-color: '#fff';
+  --top-header-bg-color: #fff;
   --top-header-text-color: 'inherit';
   --top-header-hover-color: #f6f6f6;
   --top-tool-height: var(--logo-height);
