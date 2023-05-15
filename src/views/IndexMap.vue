@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { DEFAULT_CENTER, DEFAULT_ZOOM } from '../utils/a-map.ts'
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from '../utils/a-map'
 import { useIdle } from '@vueuse/core'
 import { Ref, ref, watch } from 'vue'
 import AvMap from '@/components/AvMap.vue'
 import { Agent, AgentsGroupWithAgents, BusinessHall, CollectionPoints } from '@/types/api'
-import request from '@/utils/request.ts'
+import request from '@/utils/request'
 import { AxiosResponse } from 'axios'
 
 const businessHalls = ref<BusinessHall[]>([])

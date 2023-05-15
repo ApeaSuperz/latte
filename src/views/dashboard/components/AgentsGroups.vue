@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { Delete, Plus } from '@element-plus/icons-vue'
 import { reactive, Ref, ref } from 'vue'
-import { useValidator } from '@/hooks/web/useValidator.ts'
+import { useValidator } from '@/hooks/web/useValidator'
 import { Agent, AgentsGroup, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
-import request from '@/utils/request.ts'
-import { find, findIndex, remove } from 'lodash'
+import request from '@/utils/request'
+import { remove } from 'lodash'
 import { ElMessageBox, TreeNode } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
-import { getCollectionPointLocationByKeywords } from '@/utils/a-map.ts'
+import { getCollectionPointLocationByKeywords } from '@/utils/a-map'
 
 interface LocalBusinessHour {
   id?: number
@@ -109,7 +109,7 @@ function removeAgent(localAgent: LocalAgent) {
       method: 'DELETE',
     }).then((res) => {
       if (res.status === 200) {
-        const agentsGroup = find(agentsGroups.value, (group) => group.id === localAgent.group)
+        const agentsGroup = agentsGroups.value.find((group) => group.id === localAgent.group)
         if (agentsGroup) {
           remove(agentsGroup.agents, (agent) => agent.id === localAgent.id)
         }
@@ -160,7 +160,7 @@ function saveAgentsGroup() {
         if (editingAgentsGroup.id === 0) {
           agentsGroups.value.unshift(localAgentsGroup)
         } else {
-          const index = findIndex(agentsGroups.value, (group) => group.id === localAgentsGroup.id)
+          const index = agentsGroups.value.findIndex((group) => group.id === localAgentsGroup.id)
           agentsGroups.value[index] = localAgentsGroup
         }
 
@@ -295,11 +295,11 @@ function saveAgent() {
     .then((res) => {
       if (res.status === 200 && res.data) {
         const localAgent = localizeAgent(res.data, editingAgent.group)
-        const agentsGroup = find(agentsGroups.value, (group) => group.id === editingAgent.group)
+        const agentsGroup = agentsGroups.value.find((group) => group.id === editingAgent.group)
         if (editingAgentsGroup.id === 0 && agentsGroup) {
           agentsGroup.agents.unshift(localAgent)
         } else if (agentsGroup) {
-          const index = findIndex(agentsGroup.agents, (agent) => agent.id === localAgent.id)
+          const index = agentsGroup.agents.findIndex((agent) => agent.id === localAgent.id)
           if (index !== -1) {
             agentsGroup.agents[index] = localAgent
           } else {

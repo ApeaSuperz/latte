@@ -1,6 +1,6 @@
 import router from '@/router'
-import { useUserStore } from '@/stores/user.ts'
-import { usePermissionStore } from '@/stores/permission.ts'
+import { useUserStore } from '@/stores/user'
+import { usePermissionStore } from '@/stores/permission'
 import { useTitle } from '@vueuse/core'
 
 // 不重定向白名单

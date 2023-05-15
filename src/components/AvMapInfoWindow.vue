@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map.ts'
+import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map'
 import { inject, Ref, ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -54,7 +54,7 @@ watch(
 <template>
   <div style="display: none">
     <div ref="content">
-      <slot />
+      <slot></slot>
     </div>
   </div>
 </template>

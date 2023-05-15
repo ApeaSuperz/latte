@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useWindowSize } from '@vueuse/core'
 import { unref, watch } from 'vue'
-import { useAppStore } from '@/stores/app.ts'
-import { useSidebarStore } from '@/stores/sidebar.ts'
-import { setCssVar } from '@/utils/css.ts'
-import { useDesign } from '@/hooks/web/useDesign.ts'
+import { useAppStore } from '@/stores/app'
+import { useSidebarStore } from '@/stores/sidebar'
+import { setCssVar } from '@/utils/css'
+import { useDesign } from '@/hooks/web/useDesign'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 withDefaults(
@@ -53,7 +53,7 @@ app.$subscribe(
 
 <template>
   <ElConfigProvider :locale="zhCn" :message="{ max: 1 }" :namespace="variables.elNamespace" :size="size">
-    <slot />
+    <slot></slot>
   </ElConfigProvider>
 </template>
 

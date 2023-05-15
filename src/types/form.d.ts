@@ -1,6 +1,6 @@
-import { CSSProperties } from 'vue'
+import type { CSSProperties } from 'vue'
 import { ColProps, ComponentProps } from '@/types/components'
-import { AxiosPromise } from 'axios'
+import type { AxiosPromise } from 'axios'
 
 export interface FormSetProps {
   field: string

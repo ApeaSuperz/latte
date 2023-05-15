@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, provide, watch } from 'vue'
-import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions } from '../utils/a-map.ts'
-import { generateUuid } from '../utils/random.ts'
+import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions } from '../utils/a-map'
+import { generateUuid } from '../utils/random'
 
 const props = defineProps<{
   mapId?: string
@@ -67,8 +67,8 @@ defineExpose({ map, reset })
 
 <template>
   <div class="latte-a-map-container">
-    <div :id="mapId" class="a-map" />
-    <slot />
+    <div :id="mapId" class="a-map"></div>
+    <slot></slot>
   </div>
 </template>
 

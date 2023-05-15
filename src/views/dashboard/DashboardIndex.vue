@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import DashboardSidebar from './components/DashboardSidebar.vue'
 import DashboardHeader from './components/DashboardHeader.vue'
-import { useUserStore } from '@/stores/user.ts'
-import request from '../../utils/request.ts'
+import { useUserStore } from '@/stores/user'
+import request from '@/utils/request'
 
 const user = useUserStore()
 

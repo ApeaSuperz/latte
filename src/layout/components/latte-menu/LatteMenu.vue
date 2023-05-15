@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useDesign } from '@/hooks/web/useDesign.ts'
-import { useSidebarStore } from '@/stores/sidebar.ts'
+import { useDesign } from '@/hooks/web/useDesign'
+import { useSidebarStore } from '@/stores/sidebar'
 import { computed } from 'vue'
-import { usePermissionStore } from '@/stores/permission.ts'
+import { usePermissionStore } from '@/stores/permission'
 import { RouteRecordRaw, useRoute } from 'vue-router'
 import { DashboardRoute } from './types'
 import { useRouter } from 'vue-router'

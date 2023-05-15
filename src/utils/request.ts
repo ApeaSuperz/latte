@@ -1,7 +1,7 @@
 import { createFetch, useFetch } from '@vueuse/core'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores/user.ts'
+import { useUserStore } from '../stores/user'
 import { ElMessage } from 'element-plus'
 
 export const useApiFetch: typeof useFetch = createFetch({

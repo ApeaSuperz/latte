@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import request from '@/utils/request.ts'
+import request from '@/utils/request'
 import { reactive, Ref, ref } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
-import { useValidator } from '@/hooks/web/useValidator.ts'
+import { useValidator } from '@/hooks/web/useValidator'
 import { ElMessageBox } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
 import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
-import { getCollectionPointLocationByKeywords } from '@/utils/a-map.ts'
+import { getCollectionPointLocationByKeywords } from '@/utils/a-map'
 
 const businessHalls = ref<BusinessHall[]>([])
 

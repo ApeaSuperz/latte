@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { HotWater, OfficeBuilding } from '@element-plus/icons-vue'
-import { useSidebarStore } from '@/stores/sidebar.ts'
+import { useSidebarStore } from '@/stores/sidebar'
 import { ElMessageBox } from 'element-plus'
 
 const items = [

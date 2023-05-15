@@ -10,7 +10,7 @@ module.exports = {
   requirePragma: false,
   insertPragma: false,
   proseWrap: 'preserve',
-  htmlWhitespaceSensitivity: 'css',
+  htmlWhitespaceSensitivity: 'strict',
   vueIndentScriptAndStyle: false,
-  endOfLine: "auto",
+  endOfLine: 'auto',
 }

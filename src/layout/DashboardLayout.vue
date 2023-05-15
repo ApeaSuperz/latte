@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useDesign } from '@/hooks/web/useDesign.ts'
-import { useAppStore } from '@/stores/app.ts'
-import { useSidebarStore } from '@/stores/sidebar.ts'
+import { useDesign } from '@/hooks/web/useDesign'
+import { useAppStore } from '@/stores/app'
+import { useSidebarStore } from '@/stores/sidebar'
 import LatteLogo from './components/LatteLogo.vue'
 import LatteMenu from './components/latte-menu/LatteMenu.vue'
 import ToolHeader from './components/ToolHeader.vue'
@@ -40,7 +40,7 @@ function handleClickOutside() {
 
 <template>
   <section :class="[prefixClass, { [prefixClass + '--mobile']: mobile, [prefixClass + '--collapsed']: collapsed }]">
-    <div v-if="mobile && !collapsed" class="fullscreen-overlay" @click="handleClickOutside" />
+    <div v-if="mobile && !collapsed" class="fullscreen-overlay" @click="handleClickOutside"></div>
     <div class="left-menu">
       <LatteLogo class="left-menu__logo" />
       <LatteMenu class="left-menu__menu" />

@@ -2,9 +2,9 @@
 import { reactive, ref, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessageBox } from 'element-plus'
-import request from '../utils/request.ts'
+import request from '../utils/request'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores/user.ts'
+import { useUserStore } from '../stores/user'
 
 const account = reactive({
   username: '',

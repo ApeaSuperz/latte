@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useDesign } from '@/hooks/web/useDesign.ts'
+import { useDesign } from '@/hooks/web/useDesign'
 import { onMounted, ref, watch } from 'vue'
-import { useSidebarStore } from '@/stores/sidebar.ts'
+import { useSidebarStore } from '@/stores/sidebar'
 
 const { getPrefixClass } = useDesign()
 const prefixClass = getPrefixClass('logo')

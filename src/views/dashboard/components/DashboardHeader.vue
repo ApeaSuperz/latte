@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useSidebarStore } from '@/stores/sidebar.ts'
-import { useUserStore } from '@/stores/user.ts'
+import { useSidebarStore } from '@/stores/sidebar'
+import { useUserStore } from '@/stores/user'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 

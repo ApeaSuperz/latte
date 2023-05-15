@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { initAMapLoader } from './utils/a-map.ts'
+import { initAMapLoader } from './utils/a-map'
 import { setupRouter } from './router'
 import { createPinia } from 'pinia'
 import './permission'
