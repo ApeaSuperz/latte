@@ -7,7 +7,7 @@ import { setCssVar } from '@/utils/css.ts'
 import { useDesign } from '@/hooks/web/useDesign.ts'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     size: 'default' | 'small' | 'large'
   }>(),
