@@ -7,6 +7,7 @@ import './permission'
 
 import '@/styles/index.less'
 import '@/plugins/animate.css'
+import '@/plugins/svgIcon'
 
 initAMapLoader({
   keyPair: { key: 'ca5e4ecf2567c7806d2c04b2c5742975', serviceHost: 'http://latte.hurring.cn/_AMapService' },

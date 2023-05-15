@@ -171,7 +171,7 @@ const activatedIndex = computed(() => {
   }
 
   :deep(.@{elNamespace}-menu) {
-    width: 100%;
+    width: 100% !important;
     border-right: none;
     --bg-color: var(--left-menu-bg-color);
     --text-color: var(--left-menu-text-color);
@@ -180,7 +180,7 @@ const activatedIndex = computed(() => {
     // 选中时子标题的颜色
     .is-active {
       & > .@{elNamespace}-sub-menu__title {
-        color: var(--left-menu-text-active-color);
+        color: var(--left-menu-text-active-color) !important;
       }
     }
 
@@ -188,19 +188,19 @@ const activatedIndex = computed(() => {
     .@{elNamespace}-sub-menu__title,
     .@{elNamespace}-menu-item {
       &:hover {
-        color: var(--left-menu-text-active-color);
-        background-color: var(--left-menu-bg-color);
+        color: var(--left-menu-text-active-color) !important;
+        background-color: var(--left-menu-bg-color) !important;
       }
     }
 
     // 选中时的高亮背景和高亮颜色
     .@{elNamespace}-sub-menu.is-active,
     .@{elNamespace}-menu-item.is-active {
-      color: var(--left-menu-text-active-color);
-      background-color: var(--left-menu-bg-active-color);
+      color: var(--left-menu-text-active-color) !important;
+      background-color: var(--left-menu-bg-active-color) !important;
 
       &:hover {
-        background-color: var(--left-menu-bg-active-color);
+        background-color: var(--left-menu-bg-active-color) !important;
       }
     }
 
@@ -216,7 +216,7 @@ const activatedIndex = computed(() => {
     .@{elNamespace}-menu {
       .@{elNamespace}-sub-menu__title,
       .@{elNamespace}-menu-item:not(.is-active) {
-        background-color: var(--left-menu-bg-light-color);
+        background-color: var(--left-menu-bg-light-color) !important;
       }
     }
   }
@@ -228,7 +228,7 @@ const activatedIndex = computed(() => {
     & > .is-active,
     & > .is-active > .@{elNamespace}-sub-menu__title {
       position: relative;
-      background-color: var(--left-menu-collapse-bg-active-color);
+      background-color: var(--left-menu-collapse-bg-active-color) !important;
 
       &:after {
         .is-active--after;
@@ -263,7 +263,7 @@ const activatedIndex = computed(() => {
   // 选中时子标题的颜色
   .is-active {
     & > .el-sub-menu__title {
-      color: var(--left-menu-text-active-color);
+      color: var(--left-menu-text-active-color) !important;
     }
   }
 
@@ -271,18 +271,18 @@ const activatedIndex = computed(() => {
   .el-sub-menu__title,
   .el-menu-item {
     &:hover {
-      color: var(--left-menu-text-active-color);
-      background-color: var(--left-menu-bg-color);
+      color: var(--left-menu-text-active-color) !important;
+      background-color: var(--left-menu-bg-color) !important;
     }
   }
 
   // 选中时的高亮背景
   .el-menu-item.is-active {
     position: relative;
-    background-color: var(--left-menu-bg-active-color);
+    background-color: var(--left-menu-bg-active-color) !important;
 
     &:hover {
-      background-color: var(--left-menu-bg-active-color);
+      background-color: var(--left-menu-bg-active-color) !important;
     }
 
     &:after {

@@ -42,6 +42,7 @@ declare module '@vue/runtime-core' {
     IEpFold: typeof import('~icons/ep/fold')['default']
     IEpMapLocation: typeof import('~icons/ep/map-location')['default']
     LatteForm: typeof import('./components/latte-form/LatteForm.vue')['default']
+    LatteIcon: typeof import('./components/LatteIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -9,6 +9,7 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Inspect from 'vite-plugin-inspect'
 import EsLint from 'vite-plugin-eslint'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const root = process.cwd()
 
@@ -48,6 +49,12 @@ export default defineConfig({
     Icons({ autoInstall: true }),
 
     Inspect(),
+
+    createSvgIconsPlugin({
+      iconDirs: [pathResolve('src/assets/svgs')],
+      symbolId: 'icon-[dir]-[name]',
+      svgoOptions: true,
+    }),
   ],
   css: {
     preprocessorOptions: {

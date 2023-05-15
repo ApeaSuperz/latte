@@ -33,12 +33,15 @@ watch(
 </script>
 
 <template>
-  <div>
-    <router-link :class="prefixClass" to="/admin">
-      <img alt="♥" class="image" src="@/assets/imgs/logo.svg" />
-      <div v-if="!collapsed" class="name">Latte 管理页</div>
-    </router-link>
-  </div>
+  <router-link :class="prefixClass" to="/admin">
+    <LatteIcon
+      class="image"
+      color="var(--logo-title-text-color)"
+      icon="svg-icon:logo"
+      size="calc(var(--logo-height) - 10px)"
+    />
+    <div v-if="!collapsed" class="name">Latte 管理页</div>
+  </router-link>
 </template>
 
 <style lang="less" scoped>
@@ -57,8 +60,7 @@ watch(
   }
 
   .image {
-    width: calc(var(--logo-height) - 10px);
-    height: calc(var(--logo-height) - 10px);
+    max-width: 100%;
   }
 
   .name {

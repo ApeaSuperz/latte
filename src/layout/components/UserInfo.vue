@@ -54,7 +54,7 @@ function handleDropdownCommand(command: string) {
   .user-name {
     font-size: 14px;
     padding-left: 5px;
-    color: var(--top-header-hover-color);
+    color: var(--top-header-text-color);
 
     @media (max-width: 1024px) {
       display: none;

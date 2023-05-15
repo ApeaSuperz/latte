@@ -64,7 +64,7 @@ function handleClickOutside() {
   height: 100%;
   position: relative;
 
-  &--mobile {
+  &&--mobile {
     .left-menu {
       position: fixed !important;
       z-index: 3000;
@@ -82,7 +82,7 @@ function handleClickOutside() {
     }
   }
 
-  &--collapsed {
+  &&--collapsed {
     .left-menu {
       &__logo {
         width: var(--left-menu-min-width);
@@ -90,15 +90,15 @@ function handleClickOutside() {
     }
   }
 
-  &--mobile&--collapsed {
+  &&--mobile&--collapsed {
     .left-menu {
       &__logo {
-        width: 0;
+        padding-left: 0;
       }
     }
   }
 
-  &--collapsed:not(&--mobile) {
+  &&--collapsed:not(&--mobile) {
     .content {
       width: calc(100% - var(--left-menu-min-width));
       left: var(--left-menu-min-width);
@@ -110,7 +110,7 @@ function handleClickOutside() {
     }
   }
 
-  &:not(&--mobile):not(&--collapsed) {
+  &&:not(&--mobile):not(&--collapsed) {
     .content {
       width: calc(100% - var(--left-menu-max-width));
       left: var(--left-menu-max-width);
