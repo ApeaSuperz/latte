@@ -15,8 +15,8 @@ const collapsed = computed(() => sidebar.collapsed)
 </script>
 
 <template>
-  <div :class="prefixClass">
-    <ElIcon :color="color" size="18px" @click="sidebar.toggleCollapsed">
+  <div :class="prefixClass" @click="sidebar.toggleCollapsed">
+    <ElIcon :color="color" size="18px">
       <IEpExpand v-if="collapsed" />
       <IEpFold v-else />
     </ElIcon>
