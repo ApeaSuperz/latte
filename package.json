@@ -1,7 +1,7 @@
 {
   "name": "latte",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -15,6 +15,7 @@
     "@amap/amap-jsapi-types": "^0.0.13",
     "@element-plus/icons-vue": "^2.1.0",
     "@vueuse/core": "^10.1.0",
+    "animate.css": "^4.1.1",
     "axios": "^1.4.0",
     "element-plus": "^2.3.4",
     "lodash": "^4.17.21",
@@ -32,6 +33,9 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.11.0",
+    "eslint-plugin-you-dont-need-lodash-underscore": "^6.12.0",
+    "less": "^4.1.3",
+    "postcss-less": "^6.0.0",
     "prettier": "^2.8.8",
     "typescript": "^5.0.2",
     "unplugin-auto-import": "^0.15.3",

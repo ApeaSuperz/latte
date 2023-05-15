@@ -16,10 +16,17 @@ export const useUserStore = defineStore('user', () => {
 
   const loggedIn = computed(() => credentials.value !== null)
 
+  function logout() {
+    credentials.value = null
+    name.value = ''
+    username.value = ''
+  }
+
   return {
     credentials: skipHydrate(credentials),
     name,
     username,
     loggedIn,
+    logout,
   }
 })

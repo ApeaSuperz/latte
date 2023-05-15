@@ -49,4 +49,12 @@ export default defineConfig({
 
     Inspect(),
   ],
+  css: {
+    preprocessorOptions: {
+      less: {
+        additionalData: '@import "./src/styles/variables.module.less";',
+        javascriptEnabled: true,
+      },
+    },
+  },
 })

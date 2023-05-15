@@ -12,7 +12,7 @@
       "vite/client",
       "element-plus/global"
     ],
-    "typesRoots": ["./node_modules/@types", "./types"],
+    "typeRoots": ["./node_modules/@types", "./types"],
 
     /* Bundler mode */
     "moduleResolution": "node",

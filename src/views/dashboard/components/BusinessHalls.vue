@@ -7,7 +7,6 @@ import { ElMessageBox } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
 import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
-import { findIndex } from 'lodash'
 import { getCollectionPointLocationByKeywords } from '@/utils/a-map.ts'
 
 const businessHalls = ref<BusinessHall[]>([])
@@ -129,7 +128,7 @@ function edit(index: number) {
 }
 
 function remove(businessHallId: number) {
-  const index = findIndex(businessHalls.value, (businessHall) => businessHall.id === businessHallId)
+  const index = businessHalls.value.findIndex((businessHall) => businessHall.id === businessHallId)
   const businessHall = businessHalls.value[index]
   ElMessageBox.confirm(`此操作将永久删除营业厅「${businessHall.name}」, 是否继续?`, '删除营业厅', {
     confirmButtonText: '确定',
@@ -203,7 +202,7 @@ function save() {
         if (dialogBusinessHall.id === 0) {
           businessHalls.value.unshift(res.data)
         } else {
-          const index = findIndex(businessHalls.value, (hall) => hall.id === dialogBusinessHall.id)
+          const index = businessHalls.value.findIndex((hall) => hall.id === dialogBusinessHall.id)
           businessHalls.value[index] = res.data
         }
 

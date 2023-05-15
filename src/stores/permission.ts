@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 import { RouteRecordRaw } from 'vue-router'
 import { ref, Ref } from 'vue'
 import { cloneDeep } from 'lodash'
-import { asyncRouterMap, constantRouterMap } from '@/router'
+import { asyncRoutesMap, constantRoutesMap } from '@/router'
 
 export const usePermissionStore = defineStore('permission', () => {
-  const routers: Ref<RouteRecordRaw[]> = ref([])
+  const routes: Ref<RouteRecordRaw[]> = ref([])
   const isAddedRouters = ref(false)
   const additionalRouters: Ref<RouteRecordRaw[]> = ref([])
 
@@ -13,7 +13,7 @@ export const usePermissionStore = defineStore('permission', () => {
     return new Promise<void>((resolve) => {
       let routerMap: RouteRecordRaw[] = []
       // TODO: 从后端获取路由表
-      routerMap = cloneDeep(asyncRouterMap)
+      routerMap = cloneDeep(asyncRoutesMap)
 
       // 动态路由，404 一定要放在最后
       additionalRouters.value = routerMap.concat([
@@ -27,13 +27,13 @@ export const usePermissionStore = defineStore('permission', () => {
         },
       ])
 
-      routers.value = cloneDeep(constantRouterMap).concat(routerMap)
+      routes.value = cloneDeep(constantRoutesMap).concat(routerMap)
       resolve()
     })
   }
 
   return {
-    routers,
+    routes,
     isAddedRouters,
     additionalRouters,
     generateRoutes,

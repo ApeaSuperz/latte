@@ -1,22 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { App } from 'vue'
+import { HotWater, OfficeBuilding } from '@element-plus/icons-vue'
 
-export const constantRouterMap: RouteRecordRaw[] = [
+export const constantRoutesMap: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Map',
     meta: {
       title: '地图',
-    },
-    component: () => import('@/views/IndexMap.vue'),
-  },
-  {
-    path: '/admin',
-    name: 'AdminIndex',
-    meta: {
       hidden: true,
     },
-    redirect: '/admin/business-halls',
+    component: () => import('@/views/IndexMap.vue'),
   },
   {
     path: '/admin/login',
@@ -30,10 +24,10 @@ export const constantRouterMap: RouteRecordRaw[] = [
   // TODO: 404
 ]
 
-export const asyncRouterMap: RouteRecordRaw[] = [
+export const asyncRoutesMap: RouteRecordRaw[] = [
   {
     path: '/admin',
-    component: () => import('@/views/dashboard/DashboardIndex.vue'),
+    component: () => import('@/layout/DashboardLayout.vue'),
     redirect: '/admin/business-halls', // TODO: 数据分析页
     name: 'Dashboard',
     meta: {
@@ -46,6 +40,7 @@ export const asyncRouterMap: RouteRecordRaw[] = [
         name: 'BusinessHalls',
         meta: {
           title: '营业厅管理',
+          icon: OfficeBuilding,
         },
       },
       {
@@ -54,6 +49,7 @@ export const asyncRouterMap: RouteRecordRaw[] = [
         name: 'AgentsGroups',
         meta: {
           title: '代收点管理',
+          icon: HotWater,
         },
       },
     ],
@@ -63,7 +59,7 @@ export const asyncRouterMap: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   strict: true,
-  routes: constantRouterMap,
+  routes: constantRoutesMap,
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
