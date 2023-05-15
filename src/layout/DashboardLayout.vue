@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAppStore } from '@/stores/app'
 import { useSidebarStore } from '@/stores/sidebar'
@@ -8,7 +8,6 @@ import LatteMenu from './components/latte-menu/LatteMenu.vue'
 import ToolHeader from './components/ToolHeader.vue'
 import { useUserStore } from '@/stores/user'
 import request from '@/utils/request'
-import { onMounted } from 'vue'
 import AppView from './components/AppView.vue'
 
 const { getPrefixClass } = useDesign()
@@ -70,11 +69,13 @@ function handleClickOutside() {
       position: fixed !important;
       z-index: 3000;
     }
+
     .content {
       position: fixed;
       width: 100%;
       left: 0;
     }
+
     .header-wrapper {
       width: 100%;
       left: 0;
@@ -102,6 +103,7 @@ function handleClickOutside() {
       width: calc(100% - var(--left-menu-min-width));
       left: var(--left-menu-min-width);
     }
+
     .header-wrapper {
       width: calc(100% - var(--left-menu-min-width));
       left: var(--left-menu-min-width);
@@ -113,6 +115,7 @@ function handleClickOutside() {
       width: calc(100% - var(--left-menu-max-width));
       left: var(--left-menu-max-width);
     }
+
     .header-wrapper {
       width: calc(100% - var(--left-menu-max-width));
       left: var(--left-menu-max-width);

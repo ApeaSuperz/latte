@@ -3,9 +3,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useSidebarStore } from '@/stores/sidebar'
 import { computed } from 'vue'
 import { usePermissionStore } from '@/stores/permission'
-import { RouteRecordRaw, useRoute } from 'vue-router'
+import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
 import { DashboardRoute } from './types'
-import { useRouter } from 'vue-router'
 import { resolveRoutePaths } from '@/utils/route'
 import { isUrl } from '@/utils/request'
 import LatteMenuItems from './LatteMenuItems.vue'
@@ -24,9 +23,11 @@ const collapsed = computed(() => sidebar.collapsed)
 
 const routes = computed(() => {
   const adminRoute = permission.routes.find((route) => route.path === '/admin')
+  if (!adminRoute?.children) return [] as DashboardRoute[]
+
   const visibleDashboardRoutes = adminRoute?.children
-    ?.filter((route: RouteRecordRaw) => !route.meta?.hidden)
-    ?.map((route) => toDashboardRoute(route))
+    .filter((route: RouteRecordRaw) => !route.meta?.hidden)
+    .map((route: RouteRecordRaw) => toDashboardRoute(route))
 
   if (!visibleDashboardRoutes) {
     return [] as DashboardRoute[]
@@ -129,7 +130,7 @@ const activatedIndex = computed(() => {
         text-color="var(--left-menu-text-color)"
         @select="onMenuSelect"
       >
-        <LatteMenuItems :routes="routes" :prefix-class="prefixClass" />
+        <LatteMenuItems :prefix-class="prefixClass" :routes="routes" />
       </ElMenu>
     </ElScrollbar>
   </div>

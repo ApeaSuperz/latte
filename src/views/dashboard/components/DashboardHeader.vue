@@ -32,7 +32,7 @@ function handleDropdownCommand(command: string) {
     </div>
     <div class="logo">Latte 管理页</div>
     <div class="user-control">
-      <ElAvatar :icon="UserFilled" :size="30" class="user-avatar" />
+      <ElAvatar :icon="UserFilled as any" :size="30" class="user-avatar" />
       <ElDropdown class="user-name" trigger="click" @command="handleDropdownCommand">
         <span class="dropdown-link">
           <span>{{ user.name }}</span>

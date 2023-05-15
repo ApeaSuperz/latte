@@ -2,19 +2,15 @@
 import { useDesign } from '@/hooks/web/useDesign'
 import { usePermissionStore } from '@/stores/permission'
 import { resolveRoutePaths as resolveRoutePath } from '@/utils/route'
-import { ref } from 'vue'
-import { computed } from 'vue'
-import { watch } from 'vue'
-import { RouteRecordRaw } from 'vue-router'
-import { useRoute } from 'vue-router'
+import { computed, ref, unref, watch } from 'vue'
+import { RouteMeta, RouteRecordRaw, useRoute } from 'vue-router'
 import { filterTree, treeToList } from '@/utils/tree'
-import { unref } from 'vue'
 
 const { getPrefixClass } = useDesign()
 const prefixClass = getPrefixClass('header-breadcrumb')
 
 const permission = usePermissionStore()
-const menuRoutes = computed(() => filterBreadcrumb(permission.routes))
+const menuRoutes = computed(() => filterBreadcrumb(permission.routes as RouteRecordRaw[]))
 
 const route = useRoute()
 const levelList = ref<RouteRecordRaw[]>([])
@@ -27,7 +23,7 @@ watch(
 
     const currentPath = route.matched.slice(-1)[0].path
     levelList.value = treeToList(
-      filterTree<RouteRecordRaw>(unref(menuRoutes), (node) => {
+      filterTree<RouteRecordRaw>(unref(menuRoutes) as RouteRecordRaw[], (node) => {
         return node.path === currentPath
       })
     )
@@ -35,7 +31,7 @@ watch(
   { immediate: true }
 )
 
-function filterBreadcrumb(routes: RouteRecordRaw[], parentPath?: string) {
+function filterBreadcrumb(routes: RouteRecordRaw[], parentPath?: string): RouteRecordRaw[] {
   const adminRoutes = routes.find((route) => route.path === '/admin')
   return (adminRoutes?.children ?? routes)
     .filter((route) => !route.meta?.hidden)
@@ -51,21 +47,21 @@ function filterBreadcrumb(routes: RouteRecordRaw[], parentPath?: string) {
       if (data.children) {
         data.children = filterBreadcrumb(data.children, data.path)
       }
-      return data
+      return data as RouteRecordRaw
     })
 }
 </script>
 
 <template>
-  <ElBreadcrumb separator="/" :class="prefixClass">
+  <ElBreadcrumb :class="prefixClass" separator="/">
     <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
       <ElBreadcrumbItem
         v-for="breadcrumb in levelList"
         :key="breadcrumb.path"
         :to="!breadcrumb.redirect || breadcrumb.redirect === 'noredirect' ? '' : breadcrumb.path"
       >
-        <ElIcon v-if="breadcrumb.meta?.icon" :class="prefixClass + '__icon'">
-          <component :is="breadcrumb.meta.icon" />
+        <ElIcon v-if="(breadcrumb.meta as RouteMeta)?.icon" :class="prefixClass + '__icon'">
+          <component :is="(breadcrumb.meta as RouteMeta).icon as any" />
         </ElIcon>
         {{ breadcrumb.meta?.title }}
       </ElBreadcrumbItem>
@@ -91,6 +87,7 @@ function filterBreadcrumb(routes: RouteRecordRaw[], parentPath?: string) {
 .@{el-class} {
   :deep(&__item) {
     display: flex;
+
     .@{el-class}__inner {
       display: flex;
       align-items: center;

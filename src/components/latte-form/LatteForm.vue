@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { useDesign } from '@/hooks/web/useDesign'
 import { FormSchema } from '@/types/form'
-import { PropType } from 'vue'
+import { ElForm } from 'element-plus'
+import { PropType, ref } from 'vue'
 
 withDefaults(
   defineProps<{
@@ -8,11 +10,16 @@ withDefaults(
     model: PropType<Recordable>
   }>(),
   {
-    model: {} as any,
+    model: () => ({}),
   }
 )
+
+const { getPrefixClass } = useDesign()
+const prefixClass = getPrefixClass('latte-form')
+
+const elFormRef = ref<InstanceType<typeof ElForm>>()
 </script>
 
 <template>
-  <ElForm></ElForm>
+  <ElForm ref="elFormRef" :class="prefixClass" />
 </template>

@@ -17,7 +17,7 @@ const mobile = computed(() => app.mobile)
   <div :id="prefixClass" :class="prefixClass">
     <div :class="prefixClass + '__left'">
       <MenuCollapser class="collapse-icon hover-trigger" />
-      <HeaderBreadcrumb class="breadcrumb" :class="{ 'breadcrumb--hidden': mobile }" />
+      <HeaderBreadcrumb :class="{ 'breadcrumb--hidden': mobile }" class="breadcrumb" />
     </div>
     <div :class="prefixClass + '__right'">
       <UserInfo class="hover-trigger" />

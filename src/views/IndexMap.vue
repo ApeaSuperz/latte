@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DEFAULT_CENTER, DEFAULT_ZOOM } from '../utils/a-map'
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from '@/utils/a-map'
 import { useIdle } from '@vueuse/core'
 import { Ref, ref, watch } from 'vue'
 import AvMap from '@/components/AvMap.vue'

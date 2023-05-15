@@ -21,7 +21,7 @@ function handleDropdownCommand(command: string) {
 <template>
   <ElDropdown :class="prefixClass" trigger="click" @command="handleDropdownCommand">
     <div class="container">
-      <ElAvatar :icon="UserFilled" class="user-avatar" />
+      <ElAvatar :icon="UserFilled as any" class="user-avatar" />
       <span class="user-name">{{ user.name }}</span>
     </div>
     <template #dropdown>

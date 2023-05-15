@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map'
+import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '@/utils/a-map'
 import { inject, Ref, ref, watch } from 'vue'
 
 const props = defineProps<{

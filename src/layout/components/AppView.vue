@@ -1,5 +1,5 @@
 <template>
-  <section class="app-wrapper" :class="{ 'app-wrapper--has-footer': false /* TODO */ }">
+  <section :class="{ 'app-wrapper--has-footer': false /* TODO */ }" class="app-wrapper">
     <router-view>
       <template #default="{ Component, route }">
         <component :is="Component" :key="route.fullPath" />

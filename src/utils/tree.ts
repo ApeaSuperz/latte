@@ -21,6 +21,7 @@ export function filterTree<T = any>(
 ) {
   const nonNullOptions = ensureOptions(options)
   const children = nonNullOptions.children
+
   function filterList(list: T[]) {
     return list
       .map((node: any) => ({ ...node }))
@@ -31,6 +32,7 @@ export function filterTree<T = any>(
         return predicate(node) || (node[children] && node[children].length)
       })
   }
+
   return filterList(tree)
 }
 

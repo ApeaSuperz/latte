@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, provide, watch } from 'vue'
 import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions } from '../utils/a-map'
-import { generateUuid } from '../utils/random'
+import { generateUuid } from '@/utils/random'
 
 const props = defineProps<{
   mapId?: string

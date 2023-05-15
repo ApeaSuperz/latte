@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject, ref, useSlots, watch } from 'vue'
-import { registerAMapComponentFuncInjectionKey, useAMapEventListener } from '../utils/a-map'
+import { registerAMapComponentFuncInjectionKey, useAMapEventListener } from '@/utils/a-map'
 
 const props = defineProps<{
   geo: [number, number]
