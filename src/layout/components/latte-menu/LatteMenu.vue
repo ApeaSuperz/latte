@@ -152,7 +152,7 @@ const activatedIndex = computed(() => {
 .@{prefix-class} {
   position: relative;
   height: 100%;
-  width: vara(--left-menu-max-width);
+  width: var(--left-menu-max-width);
   overflow: hidden;
   background-color: var(--left-menu-bg-color);
   transition: width var(--transition-time-02);
