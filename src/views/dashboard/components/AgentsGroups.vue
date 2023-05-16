@@ -8,7 +8,7 @@ import request from '@/utils/request'
 import { remove } from 'lodash'
 import { ElMessageBox, TreeNode } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
-import { getCollectionPointLocationByKeywords } from '@/utils/a-map'
+import { getCollectionPointByLocation, getCollectionPointLocationByKeywords } from '@/utils/a-map'
 
 interface LocalBusinessHour {
   id?: number
@@ -322,6 +322,46 @@ function saveAgent() {
       })
     })
 }
+
+function onMapClick(lnglat: [number, number]) {
+  function fillAgent(poi: AMap.Poi) {
+    editingAgent.name = poi.name
+    editingAgent.address = poi.address
+    editingAgent.longitude = poi.location.lng.toString()
+    editingAgent.latitude = poi.location.lat.toString()
+  }
+
+  getCollectionPointByLocation(lnglat, 'bank')
+    .then((poi) => {
+      console.log(poi)
+      if (editingAgent.name || editingAgent.address) {
+        const filled = editingAgent.name ?? editingAgent.address
+        ElMessageBox.confirm(
+          `您点击的位置是「${poi.name}」，是否使用该位置替换您已经填写的位置「${filled}」？`,
+          '替换已填写位置',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'info',
+          }
+        )
+          .then(() => {
+            fillAgent(poi)
+          })
+          .catch(() => {
+            // Do nothing
+          })
+      } else {
+        fillAgent(poi)
+      }
+    })
+    .catch((err: Error) => {
+      ElMessageBox.alert('高德 API 响应：' + err.message, '获取点击位置信息失败', {
+        confirmButtonText: '确定',
+        type: 'error',
+      })
+    })
+}
 </script>
 
 <template>
@@ -412,6 +452,7 @@ function saveAgent() {
                   : undefined
               "
               class="selector-map"
+              @click="onMapClick"
             >
               <AvMapMarker
                 v-if="editingAgent.longitude.length && editingAgent.latitude.length"

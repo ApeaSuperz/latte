@@ -7,7 +7,7 @@ import { ElMessageBox } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
 import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
-import { getCollectionPointLocationByKeywords } from '@/utils/a-map'
+import { getCollectionPointByLocation, getCollectionPointLocationByKeywords } from '@/utils/a-map'
 
 const businessHalls = ref<BusinessHall[]>([])
 
@@ -221,6 +221,45 @@ function save() {
       })
     })
 }
+
+function onMapClick(lnglat: [number, number]) {
+  function fillBusinessHall(poi: AMap.Poi) {
+    dialogBusinessHall.name = poi.name
+    dialogBusinessHall.address = poi.address
+    dialogBusinessHall.longitude = poi.location.lng.toString()
+    dialogBusinessHall.latitude = poi.location.lat.toString()
+  }
+
+  getCollectionPointByLocation(lnglat, 'hall')
+    .then((poi) => {
+      if (dialogBusinessHall.name || dialogBusinessHall.address) {
+        const filled = dialogBusinessHall.name ?? dialogBusinessHall.address
+        ElMessageBox.confirm(
+          `您点击的位置是「${poi.name}」，是否使用该位置替换您已经填写的位置「${filled}」？`,
+          '替换已填写位置',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'info',
+          }
+        )
+          .then(() => {
+            fillBusinessHall(poi)
+          })
+          .catch(() => {
+            // Do nothing
+          })
+      } else {
+        fillBusinessHall(poi)
+      }
+    })
+    .catch((err: Error) => {
+      ElMessageBox.alert('高德 API 响应：' + err.message, '获取点击位置信息失败', {
+        confirmButtonText: '确定',
+        type: 'error',
+      })
+    })
+}
 </script>
 
 <template>
@@ -285,6 +324,7 @@ function save() {
                   : undefined
               "
               class="selector-map"
+              @click="onMapClick"
             >
               <AvMapMarker
                 v-if="dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length"

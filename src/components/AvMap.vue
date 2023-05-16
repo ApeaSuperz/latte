@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { computed, provide, watch } from 'vue'
-import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMap, UseAMapOptions } from '../utils/a-map'
+import {
+  aMapInjectionKey,
+  registerAMapComponentFuncInjectionKey,
+  useAMap,
+  useAMapEventListener,
+  UseAMapOptions,
+} from '@/utils/a-map'
 import { generateUuid } from '@/utils/random'
 
 const props = defineProps<{
@@ -12,6 +18,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'ready', map: AMap.Map): void
+  (e: 'click', [lng, lat]: [number, number]): void
 }>()
 
 const children: ((map: AMap.Map) => void)[] = []
@@ -49,6 +56,10 @@ watch(map, (map) => {
       })
 
       emit('ready', map)
+    })
+
+    useAMapEventListener(map, 'click', (e) => {
+      emit('click', [e.lnglat.lng, e.lnglat.lat])
     })
   }
 })

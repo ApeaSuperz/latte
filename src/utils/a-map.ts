@@ -241,3 +241,24 @@ export function getCollectionPointLocationByKeywords(type: 'bank' | 'hall', ...k
     })
   })
 }
+
+export function getCollectionPointByLocation(lnglat: [number, number], type?: 'bank' | 'hall') {
+  return new Promise<AMap.NearbyPoi>((resolve, reject) => {
+    AMap.plugin('AMap.PlaceSearch', () => {
+      const placeSearch = new (AMap as any).PlaceSearch({
+        pageSize: 1,
+        pageIndex: 1,
+        types: type ? (type === 'bank' ? '160100' : '071000') : '071000|160100',
+      })
+      console.log(placeSearch)
+
+      placeSearch.searchNearBy(type === 'bank' ? '银行' : '', lnglat, 1000, (status: any, result: any) => {
+        if (status === 'complete') {
+          resolve(result.poiList.pois[0])
+        } else {
+          reject(new Error(status))
+        }
+      })
+    })
+  })
+}
