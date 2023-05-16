@@ -162,10 +162,8 @@ function save() {
     latitude: dialogBusinessHall.latitude,
     longitude: dialogBusinessHall.longitude,
     businessTime: [] as (Omit<BusinessHour, 'id'> & { id?: number })[],
-    iconUrl: null, // TODO
-    iconColor: null,
-    iconBackgroundColor: null,
     markerImageUrl: null,
+    notes: null, // TODO
   }
 
   // 添加营业时间

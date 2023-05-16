@@ -261,6 +261,7 @@ function saveAgent() {
     latitude: parseFloat(editingAgent.latitude),
     group: Math.abs(editingAgent.group),
     businessTime: [] as (Omit<BusinessHour, 'id'> & { id?: number })[],
+    notes: null, // TODO
   }
 
   // 添加营业时间
