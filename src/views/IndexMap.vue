@@ -55,17 +55,25 @@ watch(idle, (isIdle) => {
       v-for="hall in businessHalls"
       :key="hall.name"
       :geo="[hall.longitude, hall.latitude]"
+      :offset="[-32, -64]"
       :title="hall.name"
       @click="onPointClick(hall)"
-    />
+    >
+      <LatteIcon icon="svg-icon:sgcc" size="64px" />
+    </AvMapMarker>
     <template v-for="agentsGroup in agentsGroups">
       <AvMapMarker
         v-for="agent in agentsGroup.agents"
         :key="agentsGroup.name + '-' + agent.name"
         :geo="[agent.longitude, agent.latitude]"
+        :offset="agentsGroup.markerImageUrl && agentsGroup.markerImageUrl.trim().length ? [-32, -64] : undefined"
         :title="agent.name"
         @click="onPointClick(agent)"
-      />
+      >
+        <template v-if="agentsGroup.markerImageUrl && agentsGroup.markerImageUrl.trim().length" #default>
+          <img :src="agentsGroup.markerImageUrl" style="width: 64px; height: 64px" />
+        </template>
+      </AvMapMarker>
     </template>
 
     <AvMapInfoWindow

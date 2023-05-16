@@ -2,6 +2,7 @@
 import { useDesign } from '@/hooks/web/useDesign'
 import { computed, nextTick, ref, unref, watch } from 'vue'
 import Iconify from '@purge-icons/generated'
+import { isNumber } from 'lodash'
 
 const props = withDefaults(
   defineProps<{
@@ -32,7 +33,7 @@ const symbolId = computed(() => {
 const iconifyStyle = computed(() => {
   const { color, size } = props
   return {
-    fontSize: `${size}px`,
+    fontSize: isNumber(size) ? `${size}px` : size,
     color,
   }
 })

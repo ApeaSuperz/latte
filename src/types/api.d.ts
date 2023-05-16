@@ -19,6 +19,7 @@ export interface BusinessHall {
 export interface AgentsGroup {
   id: number
   name: string
+  markerImageUrl?: string
 }
 
 export interface AgentsGroupWithAgents extends AgentsGroup {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, ref, useSlots, watch } from 'vue'
+import { inject, onMounted, ref, useSlots, watch } from 'vue'
 import { registerAMapComponentFuncInjectionKey, useAMapEventListener } from '@/utils/a-map'
 
 const props = defineProps<{
@@ -43,14 +43,16 @@ function init(map: AMap.Map) {
   marker.setMap(map)
 }
 
-register?.((map: AMap.Map) => {
-  watch(
-    props,
-    () => {
-      init(map)
-    },
-    { immediate: true }
-  )
+onMounted(() => {
+  register?.((map: AMap.Map) => {
+    watch(
+      props,
+      () => {
+        init(map)
+      },
+      { immediate: true }
+    )
+  })
 })
 </script>
 

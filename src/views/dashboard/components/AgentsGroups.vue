@@ -43,6 +43,7 @@ const editingAgent = reactive<LocalAgent>({} as LocalAgent)
 function setEditingAgentsGroup(localAgentsGroup?: LocalAgentsGroup) {
   editingAgentsGroup.id = localAgentsGroup?.id ?? 0
   editingAgentsGroup.name = localAgentsGroup?.name ?? ''
+  editingAgentsGroup.markerImageUrl = localAgentsGroup?.markerImageUrl
 }
 
 function setEditingAgent(agentGroupId: number, localAgent?: LocalAgent) {
@@ -134,10 +135,7 @@ const agentRule = {
 function saveAgentsGroup() {
   const agentsGroupData = {
     name: editingAgentsGroup.name,
-    iconUrl: null, // TODO
-    iconColor: null,
-    iconBackgroundColor: null,
-    markerImageUrl: null,
+    markerImageUrl: editingAgentsGroup.markerImageUrl,
   }
 
   let req: Promise<AxiosResponse<AgentsGroup>>
@@ -405,6 +403,9 @@ function onMapClick(lnglat: [number, number]) {
       <ElForm :model="editingAgentsGroup" :rules="agentsGroupRule">
         <ElFormItem label="名称" prop="name">
           <ElInput v-model="editingAgentsGroup.name" />
+        </ElFormItem>
+        <ElFormItem label="标记点图片" prop="markerImageUrl">
+          <ElInput v-model="editingAgentsGroup.markerImageUrl" />
         </ElFormItem>
       </ElForm>
       <template #footer>
