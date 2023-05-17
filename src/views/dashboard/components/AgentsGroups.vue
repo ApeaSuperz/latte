@@ -471,7 +471,7 @@ function onMapClick(lnglat: [number, number]) {
           </ElFormItem>
           <ElFormItem label="营业时间" prop="businessHours">
             <div class="business-hours-list">
-              <div v-for="(day, index) in ['一', '二', '三', '四', '五', '六', '天']" :key="day" class="single-day">
+              <div v-for="(day, index) in ['一', '二', '三', '四', '五', '六', '日']" :key="day" class="single-day">
                 <div class="header">
                   <div class="weekday">周{{ day }}</div>
                   <ElButton :icon="Plus as any" circle size="small" type="primary" @click="addBusinessHours(index)" />
