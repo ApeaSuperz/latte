@@ -8,9 +8,14 @@ export const useAppStore = defineStore('app', () => {
   const dark = useLocalStorage('dark', isBrowserDarkMode)
   const pageLoading = ref(false)
 
+  function toggleDarkTheme() {
+    dark.value = !dark.value
+  }
+
   return {
     mobile,
     dark: skipHydrate(dark),
     pageLoading,
+    toggleDarkTheme,
   }
 })

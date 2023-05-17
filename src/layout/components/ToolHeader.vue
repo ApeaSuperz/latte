@@ -5,6 +5,7 @@ import HeaderBreadcrumb from './HeaderBreadcrumb.vue'
 import { useAppStore } from '@/stores/app'
 import { computed } from 'vue'
 import UserInfo from './UserInfo.vue'
+import ThemeToggler from '@/layout/components/ThemeToggler.vue'
 
 const { getPrefixClass } = useDesign()
 const prefixClass = getPrefixClass('tool-header')
@@ -20,6 +21,7 @@ const mobile = computed(() => app.mobile)
       <HeaderBreadcrumb :class="{ 'breadcrumb--hidden': mobile }" class="breadcrumb" />
     </div>
     <div :class="prefixClass + '__right'">
+      <ThemeToggler />
       <UserInfo class="hover-trigger" />
     </div>
   </div>
