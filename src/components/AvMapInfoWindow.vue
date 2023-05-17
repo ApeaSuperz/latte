@@ -1,12 +1,22 @@
 <script lang="ts" setup>
 import { aMapInjectionKey, registerAMapComponentFuncInjectionKey, useAMapEventListener } from '@/utils/a-map'
-import { inject, Ref, ref, watch } from 'vue'
+import { inject, onMounted, Ref, ref, watch } from 'vue'
 
 const props = defineProps<{
   geo: [number, number]
   visible?: boolean
   offset?: [number, number]
   autoMove?: boolean
+  anchor?:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'middle-left'
+    | 'center'
+    | 'middle-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right'
 }>()
 
 const emit = defineEmits<{
@@ -19,14 +29,16 @@ const register = inject(registerAMapComponentFuncInjectionKey)
 const content = ref<HTMLDivElement>()
 
 const infoWindow: Ref<AMap.InfoWindow | undefined> = ref()
-register?.(() => {
-  const w = new AMap.InfoWindow({
-    ...props,
-    content: content.value,
-  })
-  infoWindow.value = w
-  useAMapEventListener(w, 'close', () => {
-    emit('update:visible', false)
+onMounted(() => {
+  register?.(() => {
+    const w = new AMap.InfoWindow({
+      ...props,
+      content: content.value,
+    })
+    infoWindow.value = w
+    useAMapEventListener(w, 'close', () => {
+      emit('update:visible', false)
+    })
   })
 })
 

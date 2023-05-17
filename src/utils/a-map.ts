@@ -2,6 +2,7 @@ import '@amap/amap-jsapi-types'
 import { InjectionKey, Ref, shallowRef, ShallowRef, watch } from 'vue'
 import AMapLoader from '@amap/amap-jsapi-loader'
 import { Arrayable, Fn, GeneralEventListener, MaybeRefOrGetter, toValue, tryOnScopeDispose } from '@vueuse/core'
+import { BusinessHour } from '@/types/api'
 
 export interface CollectionPoint {
   name: string
@@ -261,4 +262,82 @@ export function getCollectionPointByLocation(lnglat: [number, number], type?: 'b
       })
     })
   })
+}
+
+export function formatBusinessHours(businessHours?: BusinessHour[]): string[] {
+  if (!businessHours || !businessHours.length) return ['暂无营业时间']
+
+  const weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+  const formatted: BusinessHour[][] = []
+
+  // 检查哪些天没有营业时间
+  const workingDays = Array(7).fill(false)
+  businessHours.forEach((hour) => (workingDays[hour.weekday - 1] = true))
+
+  // 将营业时间排序并按照 weekday 组合
+  businessHours.sort((a, b) => a.weekday - b.weekday || a.open.localeCompare(b.open))
+  let currentHours = [businessHours[0]]
+  for (let i = 1; i < businessHours.length; i++) {
+    const last = currentHours[currentHours.length - 1]
+    if (
+      businessHours[i].weekday - last.weekday > 1 ||
+      businessHours[i].open !== last.open ||
+      businessHours[i].close !== last.close
+    ) {
+      formatted.push(currentHours)
+      currentHours = [businessHours[i]]
+    } else {
+      currentHours.push(businessHours[i])
+    }
+  }
+  formatted.push(currentHours)
+
+  // 格式化营业时间字符串
+  const result = formatted.map((hours) => {
+    let days = hours.map((hour) => weekdays[hour.weekday - 1])
+    if (days.length > 2) {
+      days = [days[0], '至', days[days.length - 1]]
+      if (days[0] === '星期一' && days[2] === '星期日') {
+        days = ['每天']
+      } else if (days[0] === '星期六' && days[2] === '星期日') {
+        days = ['周末']
+      }
+    }
+    return `${days.join('')}：${hours[0].open} - ${hours[0].close}`
+  })
+
+  // 将休息的天加入结果
+  let restDays: BusinessHour[] = []
+  workingDays.forEach((working, index) => {
+    if (!working) {
+      if (restDays.length > 0 && index - restDays[restDays.length - 1].weekday > 1) {
+        result.push(formatRestDays(restDays))
+        restDays = []
+      }
+      restDays.push({ weekday: index, open: '休息', close: '休息', id: 0 })
+    }
+  })
+  if (restDays.length > 0) {
+    result.push(formatRestDays(restDays))
+  }
+
+  return result
+}
+
+function formatRestDays(days: BusinessHour[]): string {
+  const weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+  let formattedDays = days.map((day) => weekdays[day.weekday])
+  if (formattedDays.length > 2) {
+    formattedDays = [formattedDays[0], '至', formattedDays[formattedDays.length - 1]]
+    if (formattedDays[0] === '星期一' && formattedDays[2] === '星期日') {
+      formattedDays = ['每天']
+    }
+  } else if (formattedDays.length === 2) {
+    if (formattedDays[0] === '星期六' && formattedDays[1] === '星期日') {
+      formattedDays = ['周末']
+    } else {
+      formattedDays = [formattedDays.join('、')]
+    }
+  }
+  return `${formattedDays.join('')}：休息`
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DEFAULT_CENTER, DEFAULT_ZOOM } from '@/utils/a-map'
+import { DEFAULT_CENTER, DEFAULT_ZOOM, formatBusinessHours } from '@/utils/a-map'
 import { useIdle } from '@vueuse/core'
 import { Ref, ref, watch } from 'vue'
 import AvMap from '@/components/AvMap.vue'
@@ -105,16 +105,28 @@ watch(idle, (isIdle) => {
     <AvMapInfoWindow
       :auto-move="false"
       :geo="[infoWindowPoint?.longitude ?? 0, infoWindowPoint?.latitude ?? 0]"
-      :visible="!!infoWindowPoint"
+      :visible="infoWindowPoint !== null"
+      anchor="top-center"
       @update:visible="infoWindowPoint = null"
     >
-      <div style="width: 200px; height: 100px; background-color: white; border-radius: 10px; padding: 10px">
-        <div class="info-window-title">
+      <div class="point-info-window">
+        <div class="point-info-window__title">
           {{ infoWindowPoint?.name }}
           <ElTag v-if="isBusinessHall(infoWindowPoint)" type="success">营业厅</ElTag>
           <ElTag v-else-if="isAgent(infoWindowPoint)">代理点</ElTag>
         </div>
-        <div style="font-size: 14px; color: #999999">{{ infoWindowPoint?.address }}</div>
+        <div class="point-info-window__desc">{{ infoWindowPoint?.address }}</div>
+        <div class="point-info-window__times">
+          <div
+            v-for="(time, index) in formatBusinessHours(infoWindowPoint?.businessTime)"
+            :key="infoWindowPoint?.id + '-time-' + index"
+          >
+            {{ time }}
+          </div>
+        </div>
+        <div v-if="infoWindowPoint?.notes && infoWindowPoint.notes.length" class="point-info-window__desc"
+          >{{ infoWindowPoint?.notes }}
+        </div>
       </div>
     </AvMapInfoWindow>
 
@@ -126,7 +138,7 @@ watch(idle, (isIdle) => {
   </AvMap>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 .major-map {
   position: relative;
   top: 0;
@@ -151,10 +163,29 @@ watch(idle, (isIdle) => {
   border-radius: 4px;
 }
 
-.info-window-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #000;
+.point-info-window {
+  width: 350px;
+  height: 150px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+
+  &__title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+  }
+
+  &__desc {
+    font-size: 14px;
+    color: #999999;
+  }
+
+  &__times {
+    font-size: 14px;
+    color: #999999;
+    margin-top: 10px;
+  }
 }
 </style>
