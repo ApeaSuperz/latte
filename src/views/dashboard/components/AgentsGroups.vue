@@ -8,7 +8,12 @@ import request from '@/utils/request'
 import { remove } from 'lodash'
 import { ElMessageBox, TreeNode } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
-import { getCollectionPointByLocation, getCollectionPointLocationByKeywords } from '@/utils/a-map'
+import {
+  DEFAULT_CENTER,
+  DEFAULT_ZOOM,
+  getCollectionPointByLocation,
+  getCollectionPointLocationByKeywords,
+} from '@/utils/a-map'
 
 interface LocalBusinessHour {
   id?: number
@@ -451,8 +456,9 @@ function onMapClick(lnglat: [number, number]) {
               :center="
                 editingAgent.longitude.length && editingAgent.latitude.length
                   ? [parseFloat(editingAgent.longitude), parseFloat(editingAgent.latitude)]
-                  : undefined
+                  : DEFAULT_CENTER
               "
+              :zoom="DEFAULT_ZOOM"
               class="selector-map"
               @click="onMapClick"
             >

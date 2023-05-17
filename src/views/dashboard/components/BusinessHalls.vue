@@ -7,7 +7,12 @@ import { ElMessageBox } from 'element-plus'
 import AvMap from '@/components/AvMap.vue'
 import { BusinessHall, BusinessHour } from '@/types/api'
 import { AxiosResponse } from 'axios'
-import { getCollectionPointByLocation, getCollectionPointLocationByKeywords } from '@/utils/a-map'
+import {
+  DEFAULT_CENTER,
+  DEFAULT_ZOOM,
+  getCollectionPointByLocation,
+  getCollectionPointLocationByKeywords,
+} from '@/utils/a-map'
 
 const businessHalls = ref<BusinessHall[]>([])
 
@@ -319,8 +324,9 @@ function onMapClick(lnglat: [number, number]) {
               :center="
                 dialogBusinessHall.longitude.length && dialogBusinessHall.latitude.length
                   ? [parseFloat(dialogBusinessHall.longitude), parseFloat(dialogBusinessHall.latitude)]
-                  : undefined
+                  : DEFAULT_CENTER
               "
+              :zoom="DEFAULT_ZOOM"
               class="selector-map"
               @click="onMapClick"
             >
