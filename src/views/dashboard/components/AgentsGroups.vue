@@ -59,6 +59,7 @@ function setEditingAgent(agentGroupId: number, localAgent?: LocalAgent) {
   editingAgent.latitude = localAgent?.latitude ?? ''
   editingAgent.group = agentGroupId
   editingAgent.businessTime = localAgent?.businessTime ?? [[], [], [], [], [], [], []]
+  editingAgent.notes = localAgent?.notes
 }
 
 function addAgentsGroup() {
@@ -266,7 +267,7 @@ function saveAgent() {
     latitude: parseFloat(editingAgent.latitude),
     group: Math.abs(editingAgent.group),
     businessTime: [] as (Omit<BusinessHour, 'id'> & { id?: number })[],
-    notes: null, // TODO
+    notes: editingAgent.notes,
   }
 
   // 添加营业时间
@@ -490,6 +491,9 @@ function onMapClick(lnglat: [number, number]) {
                 </div>
               </div>
             </div>
+          </ElFormItem>
+          <ElFormItem label="备注" prop="notes">
+            <ElInput v-model="editingAgent.notes" maxlength="100" show-word-limit type="textarea" />
           </ElFormItem>
         </ElForm>
       </ElScrollbar>

@@ -15,6 +15,7 @@ export interface BusinessHall {
   latitude: number
   businessTime: BusinessHour[]
   markerImageUrl?: string
+  notes?: string
 }
 
 export interface AgentsGroup {
@@ -34,6 +35,7 @@ export interface Agent {
   longitude: number
   latitude: number
   businessTime: BusinessHour[]
+  notes?: string
 }
 
 export interface CollectionPoints {
