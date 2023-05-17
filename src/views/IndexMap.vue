@@ -7,12 +7,49 @@ import { Agent, AgentsGroupWithAgents, BusinessHall, CollectionPoints } from '@/
 import request from '@/utils/request'
 import { AxiosResponse } from 'axios'
 
+interface PointIndicator {
+  agent?: Agent
+  hall?: BusinessHall
+  markerImageUrl?: string
+  lng: number
+  lat: number
+}
+
 const businessHalls = ref<BusinessHall[]>([])
 const agentsGroups = ref<AgentsGroupWithAgents[]>([])
+const points = ref<PointIndicator[]>([])
 request('/collection-points').then((res: AxiosResponse<CollectionPoints>) => {
   if (res.status === 200) {
-    businessHalls.value = res.data.businessHalls
-    agentsGroups.value = res.data.agentsGroups
+    const indicators = []
+    res.data.businessHalls.forEach((hall) => {
+      indicators.push({
+        hall,
+        lng: hall.longitude,
+        lat: hall.latitude,
+      })
+    })
+    res.data.agentsGroups.forEach((group) => {
+      const markerImageUrl =
+        group.markerImageUrl && group.markerImageUrl.trim().length ? group.markerImageUrl : undefined
+      group.agents.forEach((agent) => {
+        indicators.push({
+          agent,
+          markerImageUrl: markerImageUrl,
+          lng: agent.longitude,
+          lat: agent.latitude,
+        })
+      })
+    })
+
+    // 根据经纬度排序，使得地图上的点满足：下面的点覆盖上面的点，右边的点覆盖左边的点
+    indicators.sort((a, b) => {
+      if (a.lat === b.lat) {
+        return b.lng - a.lng
+      }
+      return b.lat - a.lat
+    })
+
+    points.value = indicators
   }
 })
 
@@ -52,29 +89,20 @@ watch(idle, (isIdle) => {
 <template>
   <AvMap ref="aMap" :center="DEFAULT_CENTER" :zoom="DEFAULT_ZOOM" class="major-map">
     <AvMapMarker
-      v-for="hall in businessHalls"
-      :key="hall.name"
-      :geo="[hall.longitude, hall.latitude]"
-      :offset="[-32, -64]"
-      :title="hall.name"
-      @click="onPointClick(hall)"
+      v-for="point in points"
+      :key="point.hall?.name ?? point.agent?.name"
+      :geo="[point.lng, point.lat]"
+      :offset="point.markerImageUrl || point.hall ? [-32, -64] : undefined"
+      :title="point.hall?.name ?? point.agent?.name"
+      @click="onPointClick((point.hall ?? point.agent) as BusinessHall | Agent)"
     >
-      <LatteIcon icon="svg-icon:sgcc" size="64px" />
+      <template v-if="point.markerImageUrl" #default>
+        <img :src="point.markerImageUrl" style="width: 64px; height: 64px" />
+      </template>
+      <template v-else-if="point.hall" #default>
+        <LatteIcon icon="svg-icon:sgcc" size="64px" />
+      </template>
     </AvMapMarker>
-    <template v-for="agentsGroup in agentsGroups">
-      <AvMapMarker
-        v-for="agent in agentsGroup.agents"
-        :key="agentsGroup.name + '-' + agent.name"
-        :geo="[agent.longitude, agent.latitude]"
-        :offset="agentsGroup.markerImageUrl && agentsGroup.markerImageUrl.trim().length ? [-32, -64] : undefined"
-        :title="agent.name"
-        @click="onPointClick(agent)"
-      >
-        <template v-if="agentsGroup.markerImageUrl && agentsGroup.markerImageUrl.trim().length" #default>
-          <img :src="agentsGroup.markerImageUrl" style="width: 64px; height: 64px" />
-        </template>
-      </AvMapMarker>
-    </template>
 
     <AvMapInfoWindow
       :auto-move="false"
@@ -121,6 +149,8 @@ watch(idle, (isIdle) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 24px;
+  border-radius: 4px;
 }
 
 .info-window-title {
