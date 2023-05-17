@@ -3,7 +3,7 @@ import { DEFAULT_CENTER, DEFAULT_ZOOM } from '@/utils/a-map'
 import { useIdle } from '@vueuse/core'
 import { Ref, ref, watch } from 'vue'
 import AvMap from '@/components/AvMap.vue'
-import { Agent, AgentsGroupWithAgents, BusinessHall, CollectionPoints } from '@/types/api'
+import { Agent, BusinessHall, CollectionPoints } from '@/types/api'
 import request from '@/utils/request'
 import { AxiosResponse } from 'axios'
 
@@ -15,12 +15,10 @@ interface PointIndicator {
   lat: number
 }
 
-const businessHalls = ref<BusinessHall[]>([])
-const agentsGroups = ref<AgentsGroupWithAgents[]>([])
 const points = ref<PointIndicator[]>([])
 request('/collection-points').then((res: AxiosResponse<CollectionPoints>) => {
   if (res.status === 200) {
-    const indicators = []
+    const indicators: PointIndicator[] = []
     res.data.businessHalls.forEach((hall) => {
       indicators.push({
         hall,
