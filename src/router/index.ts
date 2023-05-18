@@ -36,7 +36,7 @@ export const asyncRoutesMap: RouteRecordRaw[] = [
     children: [
       {
         path: 'business-halls',
-        component: () => import('@/views/dashboard/components/BusinessHalls.vue'),
+        component: () => import('@/views/dashboard/BusinessHalls.vue'),
         name: 'BusinessHalls',
         meta: {
           title: '营业厅管理',
@@ -45,7 +45,7 @@ export const asyncRoutesMap: RouteRecordRaw[] = [
       },
       {
         path: 'agents-groups',
-        component: () => import('@/views/dashboard/components/AgentsGroups.vue'),
+        component: () => import('@/views/dashboard/AgentsGroups.vue'),
         name: 'AgentsGroups',
         meta: {
           title: '代收点管理',
